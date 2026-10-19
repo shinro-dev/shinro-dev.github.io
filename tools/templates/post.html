@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} — Shinro</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<link rel="canonical" href="https://shinro-dev.github.io/writing/{{SLUG}}/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Shinro">
+<meta property="og:title" content="{{HEADLINE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:url" content="https://shinro-dev.github.io/writing/{{SLUG}}/">
+{{OG_IMAGE_META}}<meta property="article:published_time" content="{{DATE_ISO}}">
+{{ARTICLE_TAGS}}<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a08" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{HEADLINE}}",
+  "datePublished": "{{DATE_ISO}}",
+  "description": "{{DESCRIPTION}}",
+{{JSONLD_IMAGE}}  "author": { "@type": "Organization", "name": "Shinro" },
+  "publisher": { "@type": "Organization", "name": "Shinro" },
+  "mainEntityOfPage": "https://shinro-dev.github.io/writing/{{SLUG}}/"
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Shinro</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/#stack" class="hide-sm">Systems</a>
+      <a href="/#compare" class="hide-sm">Compare</a>
+      <a href="/#evidence" class="hide-sm">Evidence</a>
+      <a href="/writing/" aria-current="page">Writing</a>
+      <a class="nav-cta" href="https://github.com/Shinro-xyz">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <header class="post-header">
+      <a class="backlink" href="/writing/">← Writing</a>
+      <p class="eyebrow">{{KICKER}}</p>
+      <h1>
+        {{HEADLINE}}
+{{SUBTITLE_BLOCK}}      </h1>
+      <p class="lede">
+        {{LEDE}}
+      </p>
+      <p class="meta">
+        <time datetime="{{DATE_ISO}}">{{DATE_DISPLAY}}</time>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{{READING_TIME}} min read</span>
+{{META_TAGS}}      </p>
+    </header>
+  </div>
+
+{{HERO}}
+  <div class="wrap post-layout">
+    <nav class="toc" aria-label="Contents">
+      <h2>Contents</h2>
+      <ol>
+{{TOC}}      </ol>
+    </nav>
+
+    <article class="prose">
+{{BODY}}
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/">Shinro</a>
+        <p>
+          Control infrastructure for robots. Compile the policy, supervise the
+          process, replace parts of a running machine without stopping it.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h2>Systems</h2>
+        <ul>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo</a></li>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/docs/cake-control-plane.md">Cake control plane</a></li>
+          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo">LeKiwi supervision demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Elsewhere</h2>
+        <ul>
+          <li><a href="https://github.com/shinro-dev">GitHub · shinro-dev</a></li>
+          <li><a href="https://github.com/Shinro-xyz">GitHub · Shinro-xyz</a></li>
+          <li><a href="/writing/">Writing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-fine">
+      <span>© 2026 Shinro SAS</span>
+      <span>Static site. No trackers, no cookies.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

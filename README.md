@@ -20,6 +20,9 @@ assets/
   fonts/*.woff2                         Inter, Space Grotesk, JetBrains Mono (latin)
   img/                                  figures, poster, demo video
 robots.txt, sitemap.xml
+tools/
+  new-post.py                           .odt/.docx draft -> post
+  templates/post.html                   page skeleton for the converter
 ```
 
 ## Preview locally
@@ -40,13 +43,38 @@ site; there is no workflow to run.
 
 ## Adding a post
 
-1. Create `writing/<slug>/index.html` by copying the existing post and keeping
-   the header, footer, `.post-layout`, `.toc` and `.prose` structure.
-2. Give every `<h2>` an `id`, add it to the `.toc` list, and number the sections
-   with `<span class="n">01</span>`.
-3. Add the entry to `writing/index.html` and to `sitemap.xml`.
-4. Keep figures on the site's own assets — the site must not call out to
-   third-party hosts.
+From a draft:
+
+```sh
+python3 tools/new-post.py --from ~/Desktop/draft.odt \
+  --slug my-post --date 2026-10-20 --kicker "Systems note · 002"
+```
+
+The converter reads `.odt` directly and `.docx` through LibreOffice
+(`soffice --convert-to odt`), then writes `writing/<slug>/index.html`,
+`assets/img/<slug>/`, a new entry in `writing/index.html` (between the
+`posts:start` / `posts:end` markers) and a URL in `sitemap.xml`. GIFs are
+transcoded to MP4 with a WebP poster; `--video-scale 1` halves the video size.
+
+What it converts: heading levels, paragraphs, quotes, lists, tables, inline
+bold / italic / monospace runs, links and images (with intrinsic dimensions).
+It hoists the first image to the post hero and takes an italic paragraph after
+a figure as its caption.
+
+What it does not do — it prints a `review:` list at the end: ASCII diagrams
+(flagged when a preformatted block contains box-drawing characters), tables
+that should become the comparison style, captions that are not italic, the
+appendix cut (it stops at a heading starting with "Appendix"), and the
+title/standfirst split. Those are editorial.
+
+After conversion the HTML is the source of truth. Do not keep editing the
+draft and re-running the converter against the same slug: hand edits live only
+in the HTML. `--force` overwrites a post directory, media included.
+
+By hand: keep the header, footer, `.post-layout`, `.toc` and `.prose`
+structure; give every `<h2>` an `id`, add it to the `.toc` and number the
+sections; update the index and sitemap. Keep figures on the site's own
+assets — the site must not call out to third-party hosts.
 
 ## Provenance of the first post
 
