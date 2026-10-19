@@ -345,6 +345,18 @@ samp {
   margin-top: 2rem;
 }
 
+/* small print under the hero actions and post-end buttons */
+.actions-note {
+  margin-top: 0.85rem;
+  color: var(--muted);
+  font: 400 0.75rem/1.6 var(--mono);
+}
+
+.actions-note a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

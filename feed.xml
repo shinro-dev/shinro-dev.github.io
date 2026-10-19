@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shinro — Writing</title>
+    <link>https://shinro-dev.github.io/writing/</link>
+    <description>Field notes from Shinro on robot control infrastructure: compiled policy kernels, in-process supervision, and live module replacement.</description>
+    <language>en</language>
+    <atom:link href="https://shinro-dev.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>Mon, 19 Oct 2026 20:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>Same robot, same brain: one of these stacks can hot-swap it mid-stride</title>
+      <link>https://shinro-dev.github.io/writing/same-robot-same-brain/</link>
+      <guid isPermaLink="true">https://shinro-dev.github.io/writing/same-robot-same-brain/</guid>
+      <pubDate>Thu, 15 Oct 2026 00:00:00 +0000</pubDate>
+      <category>Cake</category>
+      <category>Robotics</category>
+      <author>noreply@shinro.dev (Shinro)</author>
+      <description>We ran the Microduck walking policy two ways: Pollen Robotics' own runtime, and ours. Same policy, same robot, same 50 Hz loop. Only one of them can replace parts of itself while it walks.</description>
+    </item>
+
+  </channel>
+</rss>
