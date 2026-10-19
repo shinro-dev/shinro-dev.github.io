@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shinro — control infrastructure for robots</title>
+<meta name="description" content="Shinro compiles trained control policies into dependency-free kernels and supervises them in-process with Cake: cryptographic admission, declared contracts, and atomic hot-swap at 50 Hz.">
+<link rel="canonical" href="https://shinro-dev.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shinro">
+<meta property="og:title" content="Shinro — control infrastructure for robots">
+<meta property="og:description" content="Ship the policy, not the runtime. Compiled control kernels, supervised in-process.">
+<meta property="og:url" content="https://shinro-dev.github.io/">
+<meta property="og:image" content="https://shinro-dev.github.io/assets/img/microduck-walk-poster.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a08" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Shinro</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#stack" class="hide-sm">Systems</a>
+      <a href="#compare" class="hide-sm">Compare</a>
+      <a href="#evidence" class="hide-sm">Evidence</a>
+      <a href="/writing/">Writing</a>
+      <a class="nav-cta" href="https://github.com/Shinro-xyz">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Shinro · robot control infrastructure</p>
+        <h1>Ship the policy.<br>Not the <em>runtime</em>.</h1>
+        <p class="lead">
+          We compile trained control policies into dependency-free kernels, then
+          supervise them in-process with <strong>Cake</strong> — cryptographic
+          admission, declared contracts, and atomic hot-swap at 50&nbsp;Hz.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/writing/same-robot-same-brain/">
+            Read the Microduck write-up
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Shinro-xyz/shinro-demo-microduck">Get the demo ↗</a>
+        </div>
+      </div>
+
+      <a class="shot" href="/writing/same-robot-same-brain/#demo" aria-label="Watch the Microduck trajectory swap demo">
+        <img src="/assets/img/microduck-walk-poster.webp" width="1396" height="720" alt="A Microduck biped walking in MuJoCo beside telemetry plots showing the trajectory module being swapped from circle to figure-eight to slalom.">
+        <span class="shot-tag">Microduck · live swap · 50 Hz</span>
+        <span class="shot-play">
+          <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l8 5-8 5z" fill="currentColor"/></svg>
+          Watch
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="specs">
+      <div><b>790&nbsp;KiB</b><span>one policy artifact</span></div>
+      <div><b>50&nbsp;Hz</b><span>swap without a dropped tick</span></div>
+      <div><b>7.9&nbsp;ms</b><span>time to first inference</span></div>
+      <div><b>0</b><span>runtime deps in-process</span></div>
+    </div>
+  </div>
+
+  <section class="section" id="stack">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>01</em> — The stack</p>
+        <div>
+          <h2 class="sec-title">A compiler, a kernel, and a transaction.</h2>
+          <p class="sec-intro">
+            Most robotics stacks decide between processes you can isolate and code
+            you can run quickly. Shinro does not make that trade: the artifact is
+            small and self-contained, and the system that runs it keeps every
+            module accountable.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <span class="idx">01 · COMPILE</span>
+          <h3>Shinro compiler</h3>
+          <p>
+            Traces a trained policy, lowers it to a typed dataflow graph, and emits a
+            kernel as one shared object. Memory is sized at compile time and
+            constants are folded into the graph — no interpreter, no Python, no ONNX
+            Runtime.
+          </p>
+          <span class="tag">policy.onnx → one .so kernel</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">02 · SUPERVISE</span>
+          <h3>Cake resident</h3>
+          <p>
+            An in-process supervisory control plane. Modules are capsules —
+            content-addressed and signed — bound through declared, versioned
+            contracts that are resolved into a hashed Plan before the first tick.
+          </p>
+          <span class="tag">capsule → contract → hashed plan</span>
+        </article>
+
+        <article class="card">
+          <span class="idx">03 · REPLACE</span>
+          <h3>Swap as a transaction</h3>
+          <p>
+            <code>replace-slot</code> computes the dependent closure, drains the
+            retiring generation, rebinds under an epoch guard, publishes the new
+            binding, and reclaims the old — as one supervised update.
+          </p>
+          <span class="tag">closure → drain → rebind → activate</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="compare">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>02</em> — Where it sits</p>
+        <div>
+          <h2 class="sec-title">Three ways to run the same policy.</h2>
+          <p class="sec-intro">
+            The difference is not raw speed. It is what happens when one of the
+            parts has to change while the machine is moving.
+          </p>
+        </div>
+      </div>
+
+      <p class="legend">
+        <span><b class="g g-yes">✓</b> built in</span>
+        <span><b class="g g-part">~</b> possible, but not as a supervised transaction</span>
+        <span><b class="g g-no">✕</b> not out of the box</span>
+      </p>
+
+      <table class="compare compare-verdict">
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Property</span></th>
+            <th scope="col">ROS 2 / DDS</th>
+            <th scope="col">Bare <code>dlopen</code></th>
+            <th scope="col">Cake</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fault containment (separate address spaces)</td>
+            <td data-label="ROS 2 / DDS"><span class="g g-yes">✓<span class="sr-only">Yes</span></span></td>
+            <td data-label="Bare dlopen"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+            <td class="cake" data-label="Cake"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+          </tr>
+          <tr>
+            <td>No serialization on the 50 Hz path</td>
+            <td data-label="ROS 2 / DDS"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+            <td data-label="Bare dlopen"><span class="g g-yes">✓<span class="sr-only">Yes</span></span></td>
+            <td class="cake" data-label="Cake"><span class="g g-yes">✓<span class="sr-only">Yes</span></span></td>
+          </tr>
+          <tr>
+            <td>Replace a running module without a restart</td>
+            <td data-label="ROS 2 / DDS"><span class="g g-part">~<span class="sr-only">Partial</span></span></td>
+            <td data-label="Bare dlopen"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+            <td class="cake" data-label="Cake"><span class="g g-yes">✓<span class="sr-only">Yes</span></span></td>
+          </tr>
+          <tr>
+            <td>Signed artifact, contracts checked before it runs</td>
+            <td data-label="ROS 2 / DDS"><span class="g g-part">~<span class="sr-only">Partial</span></span></td>
+            <td data-label="Bare dlopen"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+            <td class="cake" data-label="Cake"><span class="g g-yes">✓<span class="sr-only">Yes</span></span></td>
+          </tr>
+          <tr>
+            <td>Session identity survives the swap</td>
+            <td data-label="ROS 2 / DDS"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+            <td data-label="Bare dlopen"><span class="g g-no">✕<span class="sr-only">No</span></span></td>
+            <td class="cake" data-label="Cake"><span class="g g-yes">✓<span class="sr-only">Yes</span></span></td>
+          </tr>
+          <tr>
+            <td>What you deploy</td>
+            <td class="cell-text" data-label="ROS 2 / DDS">daemons + DDS</td>
+            <td class="cell-text" data-label="Bare dlopen">one <code>.so</code></td>
+            <td class="cake cell-text" data-label="Cake">one <code>.so</code> + a small resident</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="compare-foot">
+        The ROS&nbsp;2 column assumes the default DDS RMW. <code>rmw_zenoh</code>
+        replaces discovery and can share memory, but <code>rcl</code> still
+        serializes the message before the RMW sees it — and the lifecycle picture
+        does not change.
+      </p>
+
+      <div class="compare-notes">
+        <div>
+          <h3>ROS 2 / DDS</h3>
+          <p>
+            Real isolation and a driver ecosystem, paid for on the hot path:
+            serialization, discovery, jitter. Replacing a module at runtime means
+            a process restart or a lifecycle dance — the swap is the risky part.
+          </p>
+        </div>
+        <div>
+          <h3>Bare <code>dlopen</code></h3>
+          <p>
+            The fastest thing you can ship, and the shortest path to a segfault. No
+            contracts, no admission, no drain: reloading a <code>.so</code> under a
+            50&nbsp;Hz loop is a bet on your own bookkeeping.
+          </p>
+        </div>
+        <div>
+          <h3>Cake</h3>
+          <p>
+            Keeps the <code>dlopen</code> artifact and adds the transaction: signed
+            capsules, versioned contracts, a drain, a rebind under an epoch guard,
+            and a session that never restarts. One process, by design: the
+            isolation is at the interface, not the MMU — a bad write inside a
+            capsule can still take the session down. The kernel contains the swap,
+            not the fault.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="evidence">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>03</em> — Evidence</p>
+        <div>
+          <h2 class="sec-title">Same robot, same brain. <span class="dim">Two stacks.</span></h2>
+          <p class="sec-intro">
+            We ran Pollen Robotics' walking policy two ways: their runtime the way
+            they intend it, and Cake the way we intend it. Same bytes, same 50&nbsp;Hz
+            loop, same simulated duck. Only one of them can replace parts of itself
+            mid-stride.
+          </p>
+        </div>
+      </div>
+
+      <div class="band">
+        <p>Pollen gives you a robot. Cake gives you a robot whose parts are supervised.</p>
+        <cite>Microduck reference demo · MuJoCo, 50 Hz</cite>
+      </div>
+
+      <div class="cards" style="margin-top: 24px;">
+        <article class="card">
+          <span class="idx">UNCHANGED</span>
+          <h3>Session identity</h3>
+          <p>Across every swap the resident's session identity stays bit-for-bit identical. No re-run of <code>main()</code>, no re-initialised device sockets.</p>
+        </article>
+        <article class="card">
+          <span class="idx">MEASURED</span>
+          <h3>Zero missed ticks</h3>
+          <p>The loop holds 50.0 of 50.0&nbsp;Hz through the replacement — during the trajectory swap and during the policy swap.</p>
+        </article>
+        <article class="card">
+          <span class="idx">HONEST</span>
+          <h3>What it can't do</h3>
+          <p>A runtime swap guarantees memory and execution continuity, not physical state continuity. Gait-to-gait transfer is a control problem, not a kernel one.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="writing">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>04</em> — Writing</p>
+        <div>
+          <h2 class="sec-title">Field notes.</h2>
+        </div>
+      </div>
+
+      <a class="post-card" href="/writing/same-robot-same-brain/">
+        <div class="media">
+          <img src="/assets/img/microduck-walk-square.webp" width="720" height="720" loading="lazy" alt="">
+        </div>
+        <div class="body">
+          <span class="kicker">Systems note · 001</span>
+          <h3>Same robot, same brain: one of these stacks can hot-swap it mid-stride</h3>
+          <p>
+            We put Pollen Robotics' own walking policy on both stacks, then replaced
+            the trajectory module — and then the policy itself — while the duck kept
+            walking. What a supervised swap buys you, and where it stops.
+          </p>
+          <span class="tags">Cake · MuJoCo · live replacement</span>
+          <span class="more">Read the note · 10 min →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div class="cta-head">
+        <h2>Reproduce it in two minutes.</h2>
+        <p>
+          No physical Microduck required — the demo is a complete, self-contained
+          MuJoCo simulation. The Cake release is pinned, checksummed and signed, and
+          the fetcher verifies both.
+        </p>
+      </div>
+      <div class="term">
+        <div class="bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title">quickstart.sh</span>
+          <button class="term-copy" type="button" data-copy-term>Copy</button>
+        </div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">git clone https://github.com/Shinro-xyz/shinro-demo-microduck.git</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">cd shinro-demo-microduck</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">make venv &amp;&amp; make install PYTHON=.venv/bin/python</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">make fetch-cake PYTHON=.venv/bin/python</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">make cake PYTHON=.venv/bin/python</span> <span class="c"># circle → eight → slalom</span></div>
+      </div>
+
+      <div class="proof">
+        <div>
+          <span class="pnum">01 · the walk</span>
+          <p>The duck takes the circle, the figure-eight at 8&nbsp;s and the slalom at 16&nbsp;s without stopping — about 24 seconds end to end.</p>
+        </div>
+        <div>
+          <span class="pnum">02 · the log</span>
+          <p><code>state/run/swaps.json</code> holds two transactions at <code>COMPLETED</code>, both against one unchanged session id.</p>
+        </div>
+        <div>
+          <span class="pnum">03 · the tape</span>
+          <p><code>state/media/</code> has the rendered walk and the phase diagram, so you can see where the generations changed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/">Shinro</a>
+        <p>
+          Control infrastructure for robots. Compile the policy, supervise the
+          process, replace parts of a running machine without stopping it.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h2>Systems</h2>
+        <ul>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo</a></li>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/docs/cake-control-plane.md">Cake control plane</a></li>
+          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo">LeKiwi supervision demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Elsewhere</h2>
+        <ul>
+          <li><a href="https://github.com/shinro-dev">GitHub · shinro-dev</a></li>
+          <li><a href="https://github.com/Shinro-xyz">GitHub · Shinro-xyz</a></li>
+          <li><a href="/writing/">Writing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-fine">
+      <span>© <span id="year">2026</span> Shinro SAS</span>
+      <span>Static site. No trackers, no cookies.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
