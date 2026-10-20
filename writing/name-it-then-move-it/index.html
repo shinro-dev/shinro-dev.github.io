@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Name it, then move it — Shinro</title>
+<meta name="description" content="We recorded a LeKiwi bench robot for 9 minutes 52 seconds without a cut: a scripted pick-and-place, then a SmolVLA policy loaded onto the robot and driving…">
+<link rel="canonical" href="https://shinro-dev.github.io/writing/name-it-then-move-it/">
+<link rel="alternate" type="application/rss+xml" title="Shinro — Writing" href="/feed.xml">
+<meta name="author" content="Shinro">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Shinro">
+<meta property="og:title" content="Name it, then move it">
+<meta property="og:description" content="We recorded a LeKiwi bench robot for 9 minutes 52 seconds without a cut: a scripted pick-and-place, then a SmolVLA policy loaded onto the robot and driving…">
+<meta property="og:url" content="https://shinro-dev.github.io/writing/name-it-then-move-it/">
+<meta property="og:image" content="https://shinro-dev.github.io/assets/img/name-it-then-move-it/figure-01.jpg">
+<meta property="article:published_time" content="2026-10-20">
+<meta property="article:tag" content="Cake">
+<meta property="article:tag" content="Robotics">
+<meta property="article:tag" content="LeKiwi">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a08" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Name it, then move it",
+  "datePublished": "2026-10-20",
+  "description": "We recorded a LeKiwi bench robot for 9 minutes 52 seconds without a cut: a scripted pick-and-place, then a SmolVLA policy loaded onto the robot and driving…",
+  "image": "https://shinro-dev.github.io/assets/img/name-it-then-move-it/figure-01.jpg",
+  "author": { "@type": "Organization", "name": "Shinro" },
+  "publisher": { "@type": "Organization", "name": "Shinro" },
+  "mainEntityOfPage": "https://shinro-dev.github.io/writing/name-it-then-move-it/"
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Shinro</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/#stack" class="hide-sm">Systems</a>
+      <a href="/writing/" aria-current="page">Writing</a>
+      <a href="/#demos" class="hide-sm">Demos</a>
+      <a href="/about/" class="hide-sm">About</a>
+      <a href="https://shinro.dev">Product ↗</a>
+      <a class="nav-cta" href="https://github.com/Shinro-xyz">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <header class="post-header">
+      <a class="backlink" href="/writing/">← Writing</a>
+      <p class="eyebrow">Systems note · 002</p>
+      <h1>
+        Name it, then move it
+        <span class="h1-sub">Four clicks hand a live LeKiwi from a script to a learned policy.</span>
+      </h1>
+      <p class="lede">
+        We recorded a LeKiwi bench robot for 9 minutes 52 seconds without a cut: a scripted pick-and-place, then a SmolVLA policy loaded onto the robot and driving the same arm. Nothing restarts: not the LeRobot host, not the Cake resident, not the runtime session. The interesting part is not the policy. It is the chain of permission around it.
+      </p>
+      <p class="actions-note">
+        Watch the 9:52 recording, uncut:
+        <a href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">the demo and its record on GitHub ↗</a>
+      </p>
+      <p class="meta">
+        <span>Shinro</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <time datetime="2026-10-20">20 October 2026</time>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>12 min read</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>Cake</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>Robotics</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>LeKiwi</span>
+      </p>
+    </header>
+  </div>
+
+<div class="wrap">
+<figure class="fig post-hero">
+<div class="fig-media"><a href="/assets/img/name-it-then-move-it/figure-01.jpg" target="_blank" rel="noopener"><img src="/assets/img/name-it-then-move-it/figure-01.jpg" width="1800" height="1144" alt="The operator console during mission 1, with six numbered markers: top bar, mission stages, wrist camera, front camera, Cake panel and the webcam inset."></a></div>
+<figcaption><b>Fig. 1</b><span>The operator console at 0:30, mission 1 running. The numbered legend is part of the figure; the notes below use the same numbers.</span></figcaption>
+</figure>
+</div>
+
+  <div class="wrap post-layout">
+    <nav class="toc" aria-label="Contents">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#the-demo-in-one-take">The demo, in one take</a></li>
+        <li><a href="#two-brains-and-the-thing-between-them">Two brains, and the thing between them</a></li>
+        <li><a href="#the-click-that-grants-nothing-until-it-names-everything">The click that names everything</a></li>
+        <li><a href="#the-mission-that-stops-instead-of-improvising">The mission that stops</a></li>
+        <li><a href="#the-click-that-changes-the-brain">The click that changes the brain</a></li>
+        <li><a href="#twelve-seconds-of-thinking-two-seconds-of-moving">Twelve seconds of thinking</a></li>
+        <li><a href="#who-owns-what">Who owns what</a></li>
+        <li><a href="#the-panel-that-shows-its-sources">The panel that shows its sources</a></li>
+        <li><a href="#what-this-demo-does-not-claim">What this demo does not claim</a></li>
+        <li><a href="#reproduce-it-or-read-what-it-rests-on">Reproduce it, or read it</a></li>
+        <li><a href="#the-takeaway">The takeaway</a></li>      </ol>
+    </nav>
+
+    <article class="prose">
+<h2 id="the-demo-in-one-take"><span class="n">01</span>The demo, in one take</h2>
+<p>The screen is the operator console.</p>
+<p>Behind the screen sits a LeKiwi on a wooden bench: three omni wheels, five arm joints, one gripper, a wrist camera, a front camera that is switched off, and a small yellow block about seven centimetres in front of a green pad.</p>
+<p>Between the first click and the last, the same robot does the same task two ways. Mission 1 is deterministic. Its runtime searches for the block, measures whether it can reach it, picks it up, checks the grip with three short lifts of 15, 28 and 8 millimetres, and then hands over to a scripted carry that rolls the base forward in two measured 5 cm pulses, lowers the block onto the pad and rolls back.</p>
+<p>Mission 2 is learned. A Small Vision-Language-Action policy — SmolVLA — runs on the robot’s own CPU and chooses every arm target from the wrist image and the joint readings. It takes 20 chunks and 319 seconds to do what the script does in a little over three minutes.</p>
+<p>The recording is uncut and in real time. Nothing between the two missions restarts.</p>
+<h2 id="two-brains-and-the-thing-between-them"><span class="n">02</span>Two brains, and the thing between them</h2>
+<figure class="fig">
+<div class="fig-media"><a href="/assets/img/name-it-then-move-it/figure-02.png" target="_blank" rel="noopener"><img src="/assets/img/name-it-then-move-it/figure-02.png" width="3600" height="2300" loading="lazy" alt="System map: the console, the mission runtime, Cake's resident, the VLA runner, the LeRobot host and the hardware."></a></div>
+<figcaption><b>Fig. 2</b><span>The four clicks as a system map: the console asks, the script waits for the capability, Cake holds it, and the policy is loaded beside both. Solid lines are commands; dashed lines are requirements and readback. The capability is required by mission 1 but never moves the base in this scene.</span></figcaption>
+</figure>
+<p>Most robot demos answer one question: can the policy do the task? This one is built to answer a second one: when a script, a learned policy and a person are three different authorities over the same arm, what binds them?</p>
+<p>Five parts share the robot, and no single one of them is in charge.</p>
+<p>Cake is the layer that makes ownership explicit and gated as transactions: a resident that hosts signed, versioned modules, admits them before they run, and moves a live slot from one generation to the next. A learned policy is one component among many; what it may see and what it may touch are decided outside it, in the resident control plane.</p>
+<h2 id="the-click-that-grants-nothing-until-it-names-everything"><span class="n">03</span>The click that grants nothing until it names everything</h2>
+<p>Before the first click, the console is not idle. It reads:</p>
+<aside class="note ui">
+<p class="k">NOT READY · ROBOT MOTION IS HELD</p><p>Never confirmed: nobody has confirmed that this is the robot, this resident session and this host. <code>robot_session_not_confirmed</code></p>
+</aside>
+<p>The button opens a dialog that says what the permission is for:</p>
+<aside class="note ui">
+<p class="k">CONFIRM THE CONNECTED ROBOT</p><p>This grants permission to move for this resident session and this host instance only. A resident restart, a host restart (even one that reuses the pid), a re-created supervisor slot, or a resident that does not report the pinned build answering holds motion again.<br><br><code>robot</code>  LeKiwi bench<br><code>resident session</code>  01a13091…<br><code>supervisor slot instance</code>  6003298…<br><code>host spawn sequence</code>  1<br><code>host pid on the robot</code>  2371<br><br>☐ I have checked that this is the LeKiwi in front of me and that its host was started on purpose.</p>
+</aside>
+<p>This is the least cinematic click in the demo and the one most worth copying. Permission is not a checkbox in a settings file, not a browser session, and not a “yes” that survives a restart. It is a lease on a named set of processes, and every event that could make the name mean something else — a resident restart, a host restart even with the same pid, a re-created supervisor slot, a different pinned build — revokes it.</p>
+<p>Observe stays available while motion is held, because observing does not move anything. Start, Scan scene, Return arm and Try again stay off until the robot in front of the operator has been named.</p>
+<figure class="fig">
+<div class="fig-media"><img src="/assets/img/name-it-then-move-it/figure-03.jpg" width="1500" height="750" loading="lazy" alt="The confirm dialog naming the robot, the resident session, the supervisor slot instance and the host pid."></div>
+<figcaption><b>Fig. 3</b><span>0:07 — the first click. Motion is held until the operator names the robot, the resident session, the supervisor slot instance and the host behind it. The dialog asks for the tick, then the confirm. The circular inset is the recording’s webcam looking down at the bench, not a robot camera.</span></figcaption>
+</figure>
+<h2 id="the-mission-that-stops-instead-of-improvising"><span class="n">04</span>The mission that stops instead of improvising</h2>
+<p>The second click runs <code>mission-19a339e153eb</code>.</p>
+<p>Mission 1’s stages are on screen: Find, Pick, Carry, Place, Return. The runtime owns them, and every transition is a measurement, not a schedule. When the search finds no block, it sweeps. When it finds one, it measures reachability before it moves.</p>
+<p>That measurement has three outcomes, and only two of them are motion. If the block is reachable by arm alone, the mission picks. If it needs the base to advance, the mission requires the <em>mobile_approach</em> capability. And if that capability is not there, the mission stops at <code>WAITING_FOR_CAPABILITY</code> — with the same mission id and the same target id — and waits. It does not improvise a base move.</p>
+<p>Earlier that day we watched the wait end the way it should: the mission stopped at the capability boundary, the console ran Activate on the prepared Plan, and seconds later the mission continued in the same runtime session, with nothing restarted. In this recording the capability is already active before the first Start, so the wait never appears; the pick does.</p>
+<p>The arm moves over the block, aligns in small steps and closes on it at 2:08. The three lifts follow.</p>
+<p>Then at 3:05, something more interesting than a success. The Carry row reads “Failed here” for about a second. Nothing crashed. With the block in its jaws, the runtime can no longer measure the pad in the wrist frame, and the base does not move blind. The console’s demo director stops the mission, and the runner’s scripted carry takes over from beside Cake: two 5 cm pulses measured by the wheels, the block lowered and released between the pad’s logos, the arm back, the base back.</p>
+<p>So mission 1 has two ways to stop, and both are the point. One waits for authority; the other refuses to act without evidence.</p>
+<h2 id="the-click-that-changes-the-brain"><span class="n">05</span>The click that changes the brain</h2>
+<p>The third click says Enable VLA. The console answers: “Loading the VLA module on the robot.”</p>
+<p>“Module” is the console’s word for it. In this build the policy is already on the robot’s disk: the click sends one <code>swap</code> request to the VLA runner, a process beside the runtime, the Cake resident and the host. The runner loads the checkpoint, checks its hash against the envelope, runs one warm-up inference, opens its own links to the wrist camera and the host, and moves the arm to the policy’s start pose. No model file crosses the network, none of the three long-lived processes restarts, and the console stays connected.</p>
+<p>The operator also puts the block back by hand, to about mission 1’s start spot. That is not a detail to hide. This demo does not claim the policy can pick from a place where the script refuses, and it does not dress a reset up as autonomy.</p>
+<h2 id="twelve-seconds-of-thinking-two-seconds-of-moving"><span class="n">06</span>Twelve seconds of thinking, two seconds of moving</h2>
+<p>The fourth click gives the same task to the policy. The screen says: “The VLA policy is driving the arm. Thinking. Chunk 12.”</p>
+<p>Mission 2 takes 319 seconds and 20 chunks. Each chunk is one inference on the robot’s CPU, and on the runs we watched that day it took 12.0 to 12.4 seconds. Each chunk is at most 50 actions at 30 Hz: about 1.7 seconds of arm motion. Most of the episode is the arm holding still while the robot thinks.</p>
+<p>Every action the policy emits passes a gate before a servo sees it:</p>
+<ul>
+<li>six finite numbers, or the chunk is refused;</li>
+<li>the wrist roll frozen at −96.75°, the value every recorded take held;</li>
+<li>the four arm joints other than the wrist roll — shoulder pan, lift, elbow, wrist flex — smoothed with an exponential average (α = 0.35) from the pose read at the chunk start, with at most 5° of change per joint per tick;</li>
+<li>targets clamped to the joint ranges of the 30 recorded takes, widened by 3°;</li>
+<li>a target whose tool height, by forward kinematics, falls below −0.1345 m keeps the previous target instead.</li>
+</ul>
+<p>The jaws are never the policy’s value. The policy asks for open or closed; the runtime decides, with a latch on the closed reading, a minimum hold of 30 ticks, and an open threshold that has to be met for four ticks in a row.</p>
+<p>The grip check then does what mission 1 does: three short lifts. It scores retention as the similarity between two wrist frames taken at different heights: 0.94 here, passing at 0.5. That is a frame score, not a probability. An empty close scored 0.883 on 9 October, which is why the number alone is never the claim.</p>
+<p>And during the whole episode, every command carries base velocity zero. The policy outputs arm and gripper targets only. It cannot drive the wheels — by construction, not by policy.</p>
+<p>Then the set-down rule, the release, and the card: “Mission 2 complete. The VLA policy carried the block to the pad; grip confirmed; jaws opened by rule at the pad; 20 chunks in 319 s.”</p>
+<figure class="fig">
+<div class="fig-media"><img src="/assets/img/name-it-then-move-it/figure-04.jpg" width="1500" height="750" loading="lazy" alt="The VLA policy thinking at chunk 12, with the wrist view and the grip result 0.94."></div>
+<figcaption><b>Fig. 4</b><span>7:22 — the policy thinking, chunk 12. The wrist view is what the policy sees; the Pick row already carries the grip result (0.94). The base has not moved, and cannot: every command in the episode carries base velocity zero.</span></figcaption>
+</figure>
+<h2 id="who-owns-what"><span class="n">07</span>Who owns what</h2>
+<p>Read the demo as five owners, not one stack. The table below is that ownership in words.</p>
+<div class="table-wrap"><table class="data"><thead><tr><th>Part</th><th>Runs on</th><th>Owns</th><th>Does not own</th></tr></thead><tbody><tr><td data-label="Part">LeRobot host</td><td data-label="Runs on">Robot</td><td data-label="Owns">Motor, servo and camera I/O; the ZMQ link; torque on connect</td><td data-label="Does not own">Missions, policies, permission</td></tr><tr><td data-label="Part">Mission runtime</td><td data-label="Runs on">Robot</td><td data-label="Owns">The mission: reachability, search, pick, grip check, set-down and pad-frame checks</td><td data-label="Does not own">The policy; the capability; permission to move</td></tr><tr><td data-label="Part">VLA runner</td><td data-label="Runs on">Robot</td><td data-label="Owns">The checkpoint, inference, the action gate, the dead-man, zero base velocity</td><td data-label="Does not own">The mission; Cake; the wheels</td></tr><tr><td data-label="Part">Cake resident + mobile_approach</td><td data-label="Runs on">Robot</td><td data-label="Owns">Admission and lifecycle of the capability; the activation transaction; session, generation and epoch readback</td><td data-label="Does not own">The script; the policy; torque</td></tr><tr><td data-label="Part">Operator console</td><td data-label="Runs on">Desktop</td><td data-label="Owns">Four buttons, and the evidence it reads back</td><td data-label="Does not own">Any authority of its own</td></tr></tbody></table></div>
+<p>Two things in that table deserve repeating. The capability Cake holds was required by mission 1, but in this scene it never moves the robot: every mission 1 that day stopped at the hold before a base move of its own, and the rolling you see is the scripted carry, which runs beside Cake. And the VLA load is a runner operation, not a Cake transaction. Both are honest limits, and both are visible on the screen.</p>
+<h2 id="the-panel-that-shows-its-sources"><span class="n">08</span>The panel that shows its sources</h2>
+<p>The panel on the right is where the demo earns its keep. It shows what Cake holds, what that was checked against, and — where the evidence is older — it says so. In the recording it reads:</p>
+<aside class="note ui">
+<p class="k">CAKE ON THE ROBOT · OLDEST FIRST</p><p>No Cake activation in this mission.<br><br><strong>SIGNATURE CHECK: EARLIER SESSION</strong><br>No check in this runtime session. The last one, 2026-10-11 15:12:24Z (runtime session rt-20261011t150926Z-50abac15), is in History.<br><br><strong>LIVE SLOT</strong><br>mobile_approach, active, generation 2, capsule 2f34a84c1971, as the robot’s reading says.<br>No record of this mission or of this resident session says what set it.</p>
+</aside>
+<p>Read the last two lines together. The console knows the slot is active; it read that from the robot. It also knows that nothing in this session says what made it active, and it says so instead of inventing a cause. The signature check is dated and attributed to an earlier session rather than borrowed. The activation history is cards, oldest first, so a refusal stays visible after an activation replaces it.</p>
+<p>Under that panel is the machinery this demo is really showing:</p>
+<ul>
+<li>A <strong>Plan</strong> names slots, typed bindings, resource grants and content identities, and is hashed.</li>
+<li>A <strong>capsule</strong> is a signed module package. It is admitted at start under a signature policy, and its content identity is re-hashed on every store read.</li>
+<li><strong>Activation</strong> is a transaction: compute the closure, drain the retiring generation, rebind under an epoch guard, publish the new binding snapshot, reclaim. A candidate that fails validation is refused before any effect, with the slot’s generation unchanged.</li>
+<li>The <strong>readback</strong> is polled, not pushed: session identity, build, Plan digest, epoch, slot generation, lifecycle state, health and a flight ring of typed events.</li>
+</ul>
+<p>Two Plans were prepared for this demo: one to activate, and one deliberately outside what Cake will admit, to show a refusal as a refusal. The console has a card shape for each.</p>
+<p>One boundary, because it always belongs here: Cake’s modules run in one address space. The kernel guarantees the transaction, not the fault. A bad write inside a capsule can still take the session with it.</p>
+<h2 id="what-this-demo-does-not-claim"><span class="n">09</span>What this demo does not claim</h2>
+<p>The claims are narrow on purpose. Four limits are worth stating.</p>
+<ul>
+<li>The block reached the pad in two of the six VLA runs on record that day, and where it lands is not measured: the jaws open by rule wherever the latched arm comes to rest in the end-of-take region.</li>
+<li>Mission 1 is tuned for one spot: about 3 cm farther and the arm runs out of reach, 4 cm nearer and the search refuses the grasp. The carry is scripted, and measured by the wheels.</li>
+<li>This recording shows no Cake activation and no Cake module replacement: the capability was already active before the first Start. The lifecycle beats are in the other demo in the same repository.</li>
+<li>Actuator-safe recovery is not demonstrated: the host re-enables torque on every connect, and Cake has no torque concept. The policy also runs at about 12 seconds per chunk on the Pi’s CPU.</li>
+</ul>
+<h2 id="reproduce-it-or-read-what-it-rests-on"><span class="n">10</span>Reproduce it, or read what it rests on</h2>
+<p>The demo, the runner and the record are in the <a href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">kiwi-cake-demo repository</a>, on the branch <code>publish/vla-four-click-demo-20261013</code> (revision <code>8e521cf</code>). The recording is embedded in its README; the run-by-run record is <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/publish/vla-four-click-demo-20261013/docs/autonomous-demo/four-click-demo-2026-10-12.md">four-click-demo-2026-10-12.md</a>; the runner is <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/publish/vla-four-click-demo-20261013/vla/README.md">vla/README.md</a>; and the capability assessment is <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/publish/vla-four-click-demo-20261013/docs/autonomous-demo/cake-capability-assessment.md">cake-capability-assessment.md</a>.</p>
+<p>If you want the lifecycle demo without a robot, the same repository’s <a href="https://github.com/shinro-dev/kiwi-cake-demo">main branch</a> runs a harmless stub on a Pi 5 and lets you break it on purpose: change one byte of the stored capsule and it refuses to start, kill the child and it restarts, kill the resident and it comes back with a fresh session and byte-identical declared identities. That is the older, less photogenic half of the same story.</p>
+<p>Cake’s live policy replacement is exercised in the <a href="/writing/same-robot-same-brain/">Microduck note</a>; this demo is about the authority around a policy that runs beside it.</p>
+<h2 id="the-takeaway"><span class="n">11</span>The takeaway</h2>
+<p>A demo like this is easy to make impressive and hard to make trustworthy. The impressive part is a policy that picks up a block. The trustworthy part is everything that can say no: no motion until the robot, the session and the host are named; no base move without the capability; no carry without a pad frame; no action outside the gate; no claim about a slot that this session cannot source.</p>
+<p>That is what we wanted to show. Not that a small VLA can pick up a block (it can, slowly, on a Pi), but that the deployment can say exactly what happened, exactly what did not, and exactly what it does not know.</p>
+<blockquote class="pull"><p>The robot did not restart to gain a capability. It did not pretend the policy was one.</p></blockquote>
+      <div class="post-end">
+        <p>Watch the recording, or read what it rests on:</p>
+        <div class="links">
+          <a class="btn btn-primary" href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">Four-click demo ↗</a>
+          <a class="btn btn-ghost" href="/writing/same-robot-same-brain/">The Microduck note ↗</a>
+        </div>
+        <p class="actions-note">
+          Demo is free for personal, educational and non-commercial use;
+          commercial deployment requires a licence from Shinro SAS.
+          <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/main/LICENSE">Licence ↗</a>
+        </p>
+        <p class="actions-note">
+          Corrections and questions:
+          <a href="https://github.com/shinro-dev/kiwi-cake-demo/issues">open an issue</a>,
+          or <a href="https://shinro.dev">talk to us</a>.
+        </p>
+
+        <a class="next-post" href="/writing/same-robot-same-brain/">
+          <span class="k">The other half · 001</span>
+          <b>Same robot, same brain: replacing a policy mid-stride, on a simulated duck →</b>
+        </a>
+        <p class="actions-note" style="margin-top: 1.1rem;"><a href="/writing/">All writing ↗</a></p>
+      </div>
+
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/">Shinro</a>
+        <p>
+          Control infrastructure for robots. Compile the policy, supervise the
+          process, replace parts of a running machine without stopping it.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h2>Systems</h2>
+        <ul>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo</a></li>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/docs/cake-control-plane.md">Cake control plane</a></li>
+          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo">LeKiwi supervision demo</a></li>
+          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">LeKiwi four-click demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Elsewhere</h2>
+        <ul>
+          <li><a href="https://github.com/shinro-dev">GitHub · shinro-dev</a></li>
+          <li><a href="https://github.com/Shinro-xyz">GitHub · Shinro-xyz</a></li>
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/feed.xml">RSS</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-fine">
+      <span>© 2026 Shinro SAS</span>
+      <span>Static site. No trackers, no cookies.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

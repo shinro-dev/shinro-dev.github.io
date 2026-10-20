@@ -6,7 +6,18 @@
     <description>Field notes from Shinro on robot control infrastructure: compiled policy kernels, in-process supervision, and live module replacement.</description>
     <language>en</language>
     <atom:link href="https://shinro-dev.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Mon, 19 Oct 2026 20:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 20 Oct 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>Name it, then move it</title>
+      <link>https://shinro-dev.github.io/writing/name-it-then-move-it/</link>
+      <guid isPermaLink="true">https://shinro-dev.github.io/writing/name-it-then-move-it/</guid>
+      <pubDate>Tue, 20 Oct 2026 00:00:00 +0000</pubDate>
+      <category>Cake</category>
+      <category>Robotics</category>
+      <author>noreply@shinro.dev (Shinro)</author>
+      <description>Four clicks hand a live LeKiwi from a script to a learned policy: the console names the session and host before motion, Cake holds the capability, and the SmolVLA policy runs beside both.</description>
+    </item>
 
     <item>
       <title>Same robot, same brain: one of these stacks can hot-swap it mid-stride</title>

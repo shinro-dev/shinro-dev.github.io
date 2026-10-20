@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Shinro</title>
+<meta name="description" content="Who builds Shinro, what the product and the open framework are, why there are two GitHub organizations, and how the demos relate.">
+<link rel="canonical" href="https://shinro-dev.github.io/about/">
+<link rel="alternate" type="application/rss+xml" title="Shinro — Writing" href="/feed.xml">
+<meta name="author" content="Shinro">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shinro">
+<meta property="og:title" content="About — Shinro">
+<meta property="og:description" content="The workbench and the notes: the product, the open framework, and the demos, and why they live in two organizations.">
+<meta property="og:url" content="https://shinro-dev.github.io/about/">
+<meta property="og:image" content="https://shinro-dev.github.io/assets/img/name-it-then-move-it/figure-01.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a08" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "About Shinro",
+  "url": "https://shinro-dev.github.io/about/",
+  "mainEntity": {
+    "@type": "Organization",
+    "name": "Shinro",
+    "url": "https://shinro.dev",
+    "sameAs": [
+      "https://github.com/Shinro-xyz",
+      "https://github.com/shinro-dev",
+      "https://docs.shinro.dev"
+    ]
+  }
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Shinro</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/#stack" class="hide-sm">Systems</a>
+      <a href="/writing/">Writing</a>
+      <a href="/#demos" class="hide-sm">Demos</a>
+      <a href="/about/" class="hide-sm" aria-current="page">About</a>
+      <a href="https://shinro.dev">Product ↗</a>
+      <a class="nav-cta" href="https://github.com/Shinro-xyz">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">About</p>
+      <h1>The workbench<br>and the notes.</h1>
+      <p class="lead">
+        Shinro builds the layer between a trained policy and a moving machine:
+        compile it, admit it, replace it, and show what happened. This site is the
+        public notebook; the product is at <a href="https://shinro.dev">shinro.dev</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="what">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>01</em> — What we make</p>
+        <div>
+          <h2 class="sec-title">Three surfaces, one stack.</h2>
+          <p class="sec-intro">
+            The product, the open framework and the demos are different views of the
+            same layer: what runs the policy, what admits it, and what happens when
+            it has to change.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <span class="idx">01 · THE PRODUCT</span>
+          <h3>Studio and the cake kernel</h3>
+          <p>
+            Describe the machine, compose behavior from visual modules, simulate it,
+            deploy a native binary, and swap modules on a running robot. Studio is
+            source-available; the kernel is commercial.
+          </p>
+          <span class="tag"><a href="https://shinro.dev">shinro.dev ↗</a></span>
+        </article>
+
+        <article class="card">
+          <span class="idx">02 · THE OPEN FRAMEWORK</span>
+          <h3>shinro-python-modules</h3>
+          <p>
+            Five abstractions — controller, plant, estimator, trajectory, physics —
+            composed from TOML, traced, and lowered to a Zig kernel for the target.
+            This is where the compiler and the control vocabulary live.
+          </p>
+          <span class="tag"><a href="https://github.com/Shinro-xyz/shinro-python-modules">Shinro-xyz/shinro-python-modules ↗</a></span>
+        </article>
+
+        <article class="card">
+          <span class="idx">03 · THE DEMOS</span>
+          <h3>Microduck and LeKiwi</h3>
+          <p>
+            A simulated biped that swaps its policy mid-stride, and a bench robot
+            that names the session before it moves. Two demos, two claims, one
+            kernel.
+          </p>
+          <span class="tag"><a href="/#demos">See the demos ↗</a></span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="orgs">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>02</em> — Two organizations</p>
+        <div>
+          <h2 class="sec-title">Why the work is split in two.</h2>
+          <p class="sec-intro">
+            The split is practical, not organisational: the framework and the
+            simulation demos keep the compiler and the control abstractions
+            together; this site and the four-click demo keep the operator contract
+            and the evidence together.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards two">
+        <article class="card">
+          <span class="idx">FRAMEWORK + REFERENCE DEMOS</span>
+          <h3>Shinro-xyz</h3>
+          <p>
+            The open control framework and the simulation demos:
+            <code>shinro-python-modules</code>, <code>shinro-demo-microduck</code>,
+            <code>shinro-demo-lekiwi</code>. The compiler, the abstractions and the
+            MuJoCo references live here.
+          </p>
+          <span class="tag"><a href="https://github.com/Shinro-xyz">github.com/Shinro-xyz ↗</a></span>
+        </article>
+
+        <article class="card">
+          <span class="idx">SITE + FOUR-CLICK DEMO</span>
+          <h3>shinro-dev</h3>
+          <p>
+            This site, and the LeKiwi four-click demo. That demo is here because it
+            is about the operator contract and the evidence — what the console may
+            claim — rather than the kernel internals.
+          </p>
+          <span class="tag"><a href="https://github.com/shinro-dev">github.com/shinro-dev ↗</a></span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="publish">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label"><em>03</em> — How we publish</p>
+        <div>
+          <h2 class="sec-title">Claims with sources.</h2>
+        </div>
+      </div>
+
+      <div class="prose" style="max-width: 46rem;">
+        <p>
+          The notes are evidence-first: every claim is tied to a recording, a run
+          record or a source file, and the limits are stated next to the claims.
+          When we get something wrong, we would rather correct it in public than
+          leave it standing.
+        </p>
+        <p>
+          Demos are source-available for personal, educational and non-commercial
+          use; commercial deployment requires a licence from Shinro SAS. New notes
+          are on <a href="/feed.xml">RSS</a>; corrections go to the issues of the
+          demo repository in question.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div class="cta-head">
+        <h2>Talk to us.</h2>
+        <p>
+          If you are building a robot and the control layer is the part you keep
+          rebuilding, we would like to hear about it.
+        </p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://shinro.dev">shinro.dev ↗</a>
+        <a class="btn btn-ghost" href="https://docs.shinro.dev">Documentation ↗</a>
+        <a class="btn btn-ghost" href="https://github.com/shinro-dev">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/">Shinro</a>
+        <p>
+          Control infrastructure for robots. Compile the policy, supervise the
+          process, replace parts of a running machine without stopping it.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h2>Systems</h2>
+        <ul>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo</a></li>
+          <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/docs/cake-control-plane.md">Cake control plane</a></li>
+          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo">LeKiwi supervision demo</a></li>
+          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">LeKiwi four-click demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Elsewhere</h2>
+        <ul>
+          <li><a href="https://shinro.dev">shinro.dev · product</a></li>
+          <li><a href="https://docs.shinro.dev">Documentation</a></li>
+          <li><a href="https://github.com/shinro-dev">GitHub · shinro-dev</a></li>
+          <li><a href="https://github.com/Shinro-xyz">GitHub · Shinro-xyz</a></li>
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/feed.xml">RSS</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-fine">
+      <span>© 2026 Shinro SAS</span>
+      <span>Static site. No trackers, no cookies.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
