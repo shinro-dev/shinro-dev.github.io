@@ -150,7 +150,7 @@
           <strong>The heavyweight middleware path.</strong> Split your components
           across processes (ROS&nbsp;2 / DDS). You get isolation between processes,
           but it comes at the cost of serialization, runtime discovery, and network
-          jitter — all with a multi-gigabyte footprint. On a robot as small as the
+          jitter, plus a multi-gigabyte footprint. On a robot as small as the
           Microduck, that is a death sentence for anything that has to stay upright
           through tick-precise updates.
         </li>
@@ -317,12 +317,12 @@
 
       <ul>
         <li>
-          <strong>The policy module</strong> — runs the compiled inference VM: 61-D
+          <strong>The policy module</strong> runs the compiled inference VM: 61-D
           observation in, 14-D joint offsets out, at 50&nbsp;Hz (a hard 20&nbsp;ms
           tick budget).
         </li>
         <li>
-          <strong>The trajectory module</strong> — reads the trunk pose, runs
+          <strong>The trajectory module</strong> reads the trunk pose, runs
           closed-loop pure pursuit, publishes a 13-D command block.
         </li>
       </ul>
@@ -406,8 +406,7 @@
       </p>
 
       <p>
-        Reproduce the whole sequence yourself — the walk, both swaps, and the log —
-        with <a href="https://github.com/Shinro-xyz/shinro-demo-microduck">the Microduck demo on GitHub</a>.
+        Reproduce the whole sequence yourself: the walk, both swaps, and the log, with <a href="https://github.com/Shinro-xyz/shinro-demo-microduck">the Microduck demo on GitHub</a>.
       </p>
 
       <h2 id="replace-slot"><span class="n">06</span>Under the hood: what <code>replace-slot</code> actually does</h2>
@@ -518,8 +517,8 @@
         socket and the clock into a stable <code>bridge</code> module that is never
         swapped, and make the policy a leaf the bridge consumes with a live binding.
         Through the swap the bridge keeps ticking, re-reads the policy's action table
-        from the epoch-guarded binding snapshot, and when the table address changes —
-        meaning a new policy generation has been committed — cross-fades from the
+        from the epoch-guarded binding snapshot, and when the table address changes, meaning a new policy
+        generation has been committed, cross-fades from the
         outgoing network's action to the incoming one over 25 ticks. The blend
         happens in the one place that sees both generations at once, so the hand-over
         is bumpless.
@@ -534,12 +533,12 @@
         <li>
           <strong>Fused policy swap.</strong> The transaction reads
           <code>COMPLETED</code> and the session identity is unchanged, but the plant
-          link is torn down — the sim client exits and the duck stops at the swap.
+          link is torn down. The sim client exits and the duck stops at the swap.
         </li>
         <li>
           <strong>Split policy swap</strong> (<code>make policy-swap</code>). The same
           transaction, the same unchanged session, but the stable bridge holds the
-          plant link — the duck stands, then walks.
+          plant link. The duck stands, then walks.
         </li>
       </ul>
 
@@ -550,7 +549,7 @@
         <code>replace-slot</code> it used for the trajectory, and then it walks the
         circle. The transaction reads <code>COMPLETED</code>, the session identity is
         bit-for-bit unchanged, and the bridge held the plant link for the whole
-        window — steps=511, travel=1.155&nbsp;m, speed=0.113&nbsp;m/s.
+        window: steps=511, travel=1.155&nbsp;m, speed=0.113&nbsp;m/s.
       </p>
 
       <figure class="fig">
@@ -643,7 +642,7 @@ make cake PYTHON=.venv/bin/python</code></pre></div>
       <p>
         Want the one that turns heads? The policy swap is its own release:
         <code>make fetch-cake-policy-swap</code> then <code>make policy-swap</code>
-        swaps the <strong>policy</strong> itself — a standing network for a walking
+        swaps the <strong>policy</strong> itself: a standing network for a walking
         one, live, without the walk stopping.
       </p>
 
@@ -658,7 +657,7 @@ make cake PYTHON=.venv/bin/python</code></pre></div>
         Cake takes the one policy everyone already has and gives it what a shipped
         product actually needs: a single dependency-free artifact, cryptographic
         admission, verified interface contracts, and atomic in-process lifecycle
-        management — with the lifecycle guarantees of a microkernel and the speed of raw memory.
+        management, with the lifecycle guarantees of a microkernel and the speed of raw memory.
       </p>
 
       <blockquote class="pull">
