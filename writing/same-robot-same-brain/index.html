@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Same robot, same brain — Shinro</title>
-<meta name="description" content="We ran Pollen Robotics' Microduck walking policy on their runtime and on Cake, then hot-swapped the trajectory module and the policy itself mid-stride at 50 Hz.">
+<title>Change a walking robot&#x27;s software without stopping it — Shinro</title>
+<meta name="description" content="Run Microduck in a simulator, then swap its navigator and its walking brain while it walks. Two minutes, no robot, no GPU.">
 <link rel="canonical" href="https://shinro-dev.github.io/writing/same-robot-same-brain/">
 <link rel="alternate" type="application/rss+xml" title="Shinro — Writing" href="/feed.xml">
 <meta name="author" content="Shinro">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Shinro">
-<meta property="og:title" content="Same robot, same brain: one of these stacks can hot-swap it mid-stride">
-<meta property="og:description" content="We ran the Microduck walking policy two ways. Same policy, same robot, same 50 Hz loop. Only one of them can replace parts of itself while it walks.">
+<meta property="og:title" content="Change a walking robot's software without stopping it">
+<meta property="og:description" content="Run Microduck in a simulator, then swap its navigator and its walking brain while it walks. Two minutes, no robot, no GPU.">
 <meta property="og:url" content="https://shinro-dev.github.io/writing/same-robot-same-brain/">
-<meta property="og:image" content="https://shinro-dev.github.io/assets/img/microduck-trajectory-swap.png">
-<meta property="article:published_time" content="2026-10-15">
+<meta property="og:image" content="https://shinro-dev.github.io/assets/img/same-robot-same-brain/figure-03.png">
+<meta property="article:published_time" content="2026-10-24">
 <meta property="article:tag" content="Cake">
 <meta property="article:tag" content="Robotics">
+<meta property="article:tag" content="Microduck">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
@@ -27,10 +28,10 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Same robot, same brain: one of these stacks can hot-swap it mid-stride",
-  "datePublished": "2026-10-15",
-  "description": "We ran the Microduck walking policy two ways: Pollen Robotics' own runtime, and ours. Same policy, same robot, same 50 Hz loop.",
-  "image": "https://shinro-dev.github.io/assets/img/microduck-trajectory-swap.png",
+  "headline": "Change a walking robot's software without stopping it",
+  "datePublished": "2026-10-24",
+  "description": "Run Microduck in a simulator, then swap its navigator and its walking brain while it walks. Two minutes, no robot, no GPU.",
+  "image": "https://shinro-dev.github.io/assets/img/same-robot-same-brain/figure-03.png",
   "author": { "@type": "Organization", "name": "Shinro" },
   "publisher": { "@type": "Organization", "name": "Shinro" },
   "mainEntityOfPage": "https://shinro-dev.github.io/writing/same-robot-same-brain/"
@@ -45,10 +46,9 @@
     <a class="brand" href="/">Shinro</a>
     <nav class="site-nav" aria-label="Primary">
       <a href="/#stack" class="hide-sm">Systems</a>
+      <a href="/#compare" class="hide-sm">Compare</a>
+      <a href="/#evidence" class="hide-sm">Evidence</a>
       <a href="/writing/" aria-current="page">Writing</a>
-      <a href="/#demos" class="hide-sm">Demos</a>
-      <a href="/about/" class="hide-sm">About</a>
-      <a href="https://shinro.dev">Product ↗</a>
       <a class="nav-cta" href="https://github.com/Shinro-xyz">GitHub ↗</a>
     </nav>
   </div>
@@ -60,26 +60,31 @@
       <a class="backlink" href="/writing/">← Writing</a>
       <p class="eyebrow">Systems note · 001</p>
       <h1>
-        Same robot, same brain
-        <span class="h1-sub">One of these stacks can hot-swap it mid-stride.</span>
+        Change a walking robot's software without stopping it
+        <span class="h1-sub">Swap the navigator, then the brain. The duck keeps walking.</span>
       </h1>
       <p class="lede">
-        We ran the Microduck walking policy two ways: Pollen Robotics' own runtime,
-        and ours. Same policy, same robot, same 50&nbsp;Hz loop. Only one of them can
-        replace parts of itself while it walks.
+        You will run Microduck, the small open-source walking robot from Pollen
+        Robotics, part of Hugging Face, in a physics simulator on your computer.
+        While it walks, you will replace the part of its software that decides where
+        it goes. The duck keeps walking, and the program in charge of it never
+        restarts.
       </p>
       <p class="actions-note">
-        Reproduce it in two minutes:
-        <a href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo on GitHub ↗</a>
+        No robot, no GPU, about two minutes:
+        <a href="#try-it">Try it yourself</a> ·
+        <a href="https://github.com/Shinro-xyz/shinro-demo-microduck">the demo on GitHub ↗</a>
       </p>
       <p class="meta">
         <span>Shinro</span>
         <span class="sep" aria-hidden="true">·</span>
-        <time datetime="2026-10-15">15 October 2026</time>
+        <time datetime="2026-10-24">24 October 2026</time>
         <span class="sep" aria-hidden="true">·</span>
-        <span>10 min read</span>
+        <span>11 min read</span>
         <span class="sep" aria-hidden="true">·</span>
-        <span>Cake · Robotics</span>
+        <span>Cake</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>Microduck</span>
       </p>
     </header>
   </div>
@@ -87,20 +92,13 @@
   <div class="wrap">
     <figure class="fig post-hero">
       <div class="fig-media">
-        <video loop muted playsinline preload="none" poster="/assets/img/microduck-walk-poster.webp" width="1396" height="720">
-          <source src="/assets/img/microduck-walk.mp4" type="video/mp4">
-          <img src="/assets/img/microduck-walk-poster.webp" width="1396" height="720" alt="A Microduck biped walking in MuJoCo beside telemetry plots showing live trajectory module swaps.">
+        <video loop muted playsinline preload="none" poster="/assets/img/same-robot-same-brain/figure-01-poster.webp" width="1242" height="640">
+          <source src="/assets/img/same-robot-same-brain/figure-01.mp4" type="video/mp4">
+          <img src="/assets/img/same-robot-same-brain/figure-01-poster.webp" width="1242" height="640" alt="A Microduck walking in the simulator while its walking brain is replaced; the gait changes and the walk continues.">
         </video>
         <button class="video-toggle" type="button" data-video-toggle aria-label="Play the demo video">Play</button>
       </div>
-      <figcaption>
-        <b>Fig. 1</b>
-        <span>
-          Microduck (14-servo biped) switching live from circle → figure-8 → slalom.
-          The walking policy keeps ticking at 50&nbsp;Hz while the trajectory module
-          is atomically replaced mid-stride.
-        </span>
-      </figcaption>
+      <figcaption><b>Fig. 1</b><span>Swapping the walking brain mid-stride, from <a href="https://huggingface.co/xiaofengzi/microduck-walking-onnx/blob/main/BEST_alpha_walking.onnx">alpha_walking_policy</a> (BEST_alpha_walking.onnx) to <a href="https://huggingface.co/pollen-robotics/microduck-policies/blob/main/velstand.onnx">velstand_walking_policy</a> (velstand.onnx). The duck does not stop.</span></figcaption>
     </figure>
   </div>
 
@@ -108,586 +106,192 @@
     <nav class="toc" aria-label="Contents">
       <h2>Contents</h2>
       <ol>
-        <li><a href="#parts">A robot should be able to change its own parts</a></li>
-        <li><a href="#fork">The fork every robotics team hits</a></li>
-        <li><a href="#pollen">We ran Pollen's stack the way they intend it</a></li>
-        <li><a href="#compare">Cake vs Pollen, side by side</a></li>
-        <li><a href="#demo">The demo: swapping a trajectory mid-stride</a></li>
-        <li><a href="#replace-slot">What <code>replace-slot</code> actually does</a></li>
-        <li><a href="#policy">The harder half: swapping the policy</a></li>
-        <li><a href="#try">Try it in two minutes</a></li>
-        <li><a href="#takeaway">The takeaway</a></li>
+        <li><a href="#the-problem">The problem: you can't pause a walking robot</a></li>
+        <li><a href="#the-solution">The solution: give each part its own slot</a></li>
+        <li><a href="#demo-a">Demo A: one walking brain for another</a></li>
+        <li><a href="#demo-b">Demo B: swapping the navigation target</a></li>
+        <li><a href="#demo-c">Demo C: swapping the brain itself</a></li>
+        <li><a href="#limits">What this demo does not show</a></li>
+        <li><a href="#try-it">Try it yourself</a></li>
+        <li><a href="#troubleshooting">If something goes wrong</a></li>
+        <li><a href="#credits">Credits and licence</a></li>
       </ol>
     </nav>
 
     <article class="prose">
+<p>Then you will go one step further and swap the brain itself, mid-stride. Everything runs in simulation, on a Linux PC with an Intel or AMD processor: nothing to buy, nothing to plug in.</p>
 
-      <h2 id="parts"><span class="n">01</span>A robot should be able to change its own parts while it's walking</h2>
+<h2 id="the-problem"><span class="n">01</span>The problem: you can't pause a walking robot</h2>
+<p>A walking robot needs its software running every moment, even to stand still. In its standing pose, Microduck's centre of gravity sits about 5&nbsp;mm in front of its ankles. Its walking brain, a small neural network, keeps it balanced by correcting its legs 50 times a second.</p>
+<p>That brain is only one part of the robot's software. Another one, the navigator, decides where to go: a circle, a figure 8, a slalom. Over a robot's life you keep changing these parts: a new route, a better-trained brain, a bug fix.</p>
+<p>The simple way to change a part is to stop the robot's software and start it again. On a walking robot, that stops the walk, and stopping mid-step can make it fall.</p>
+<p>Microduck's own software avoids this for its brains. It keeps one per move, from walking to roller skating, and switches between them while the duck runs. It can even <a href="https://github.com/pollen-robotics/microduck/blob/main/docs/robot/cheatsheet.md">load a new walking brain from the Hugging Face Hub</a> without restarting. So the real question is: <strong>can every part be changed like that, while the others keep the robot on its feet?</strong></p>
 
-      <p>
-        Microduck is a 25&nbsp;cm, 14-servo biped (15 if you include the beak
-        actuator). Its walking policy is a PPO-trained neural network by the Pollen
-        Robotics team and obtained from Hugging Face.
-      </p>
+<h2 id="the-solution"><span class="n">02</span>The solution: give each part its own slot</h2>
+<p>Cake is a program that runs each part of a robot's software as a separate module, in its own slot. While the robot walks, one command switches a slot from one module to another, and the other modules keep running.</p>
+<p>Microduck's own software already swaps its walking brain. What Cake adds is that the slot isn't reserved for brains: anything with a declared set of inputs and outputs can sit in it, a navigator now, a filter or a behaviour someone writes later. That's the difference between shipping a robot and shipping one you can maintain: a route change, a better-trained brain or a bug fix goes in while the duck keeps working, and a bad brain comes back out the same way. Each part ships as one small self-contained program, so there's nothing else to install on the robot.</p>
+<p>Pollen's runtime can swap its brains too, but it walks the robot home first, as <a href="https://github.com/pollen-robotics/microduck/blob/d7560ef059c73fab4177eb247c1774013f6feb9d/docs/design/policy-channel-design.md#L677">its policy-channel notes</a> say. With Cake, no such return happens during the policy swap. It's the difference between a service that goes down for maintenance and one that doesn't.</p>
 
-      <p>
-        That was deliberate. Keeping the neural networks the same allowed us to
-        answer the only question that matters to anyone shipping robots on the
-        field: what does the deployment stack around the robot look like?
-      </p>
+<figure class="fig">
+<div class="fig-media"><img src="/assets/img/same-robot-same-brain/figure-02.png" width="1344" height="550" loading="lazy" alt="Diagram of the navigator demo: the walking brain and the navigator as two slots inside Cake, with a figure 8 and a slalom navigator loaded as spares, the MuJoCo simulator beside it."></div>
+<figcaption><b>Fig. 2</b><span>How the navigator demo is wired: the brain and the navigator run inside Cake, with the figure 8 and slalom navigators loaded as spares; the simulator runs beside it.</span></figcaption>
+</figure>
 
-      <p>
-        So we ran both, faithfully: Pollen's runtime the way Pollen intends it, ours
-        the way we intend it. Same robot. Same policy. Two very different machines.
-      </p>
+<p>Key takeaways from the demo:</p>
+<ul>
+<li><strong>One slot per part.</strong> The walking brain sits in one slot and the navigator in another, each running on its own.</li>
+<li><strong>Prepared before the robot moves.</strong> When Cake starts, it loads every module you may switch to and checks that their inputs and outputs fit together.</li>
+<li><strong>Swap one, the rest keep going.</strong> Cake winds down the old module, connects the new one in its slot, then unloads the old one. The brain keeps running throughout.</li>
+<li><strong>Nothing restarts.</strong> Cake reports the same session ID before and after the swaps, so you can check for yourself that it never restarted.</li>
+</ul>
+<p>Think of a long drive: you can change who reads the map without stopping the car, as long as the driver keeps driving. Here the walking brain drives and the navigator reads the map.</p>
+<p>Swapping the brain itself is harder, because in the simple setup the brain also keeps the clock and holds the link to the robot. So for that demo, those two jobs move into a small module that never changes, the bridge. The bridge then blends from the old brain to the new one over half a second.</p>
 
-      <h2 id="fork"><span class="n">02</span>The fork every robotics team hits</h2>
+<h2 id="demo-a"><span class="n">03</span>Demo A: one walking brain for another</h2>
+<p>This is the comparison that matters. We swapped Pollen's default walking brain for a different walking brain while the robot was moving, and ran the same two brains, at the same requested speed, on Pollen's own runtime.</p>
 
-      <p>Deploy a control policy onto real hardware and you land on one of two unhappy roads:</p>
+<figure class="fig">
+<div class="fig-media"><img src="/assets/img/same-robot-same-brain/figure-03.png" width="1378" height="1040" loading="lazy" alt="Line chart of distance travelled through the swap: Cake's line keeps rising, Pollen's flattens for 1.4 seconds after the duck falls."></div>
+<figcaption><b>Fig. 3</b><span>Comparing Cake (green) with Pollen Robotics' own runtime (amber) for Microduck, on the same two walking brains.</span></figcaption>
+</figure>
 
-      <ul>
-        <li>
-          <strong>The heavyweight middleware path.</strong> Split your components
-          across processes (ROS&nbsp;2 / DDS). You get isolation between processes,
-          but it comes at the cost of serialization, runtime discovery, and network
-          jitter, plus a multi-gigabyte footprint. On a robot as small as the
-          Microduck, that is a death sentence for anything that has to stay upright
-          through tick-precise updates.
-        </li>
-        <li>
-          <strong>The bare <code>dlopen</code> path.</strong> Cram everything into
-          one process. It is fast and deterministic, but swapping binaries is a
-          tightrope walk over an impending segfault: there are no interface
-          contracts and no lifecycle guarantees.
-        </li>
-      </ul>
+<p>Same robot, same two walking brains, same speed asked for. Ours (green) never stops: 1.1&nbsp;m from where it started. Theirs (amber) gets 15&nbsp;cm, and the flat middle of the chart is the 1.4 seconds it spent on the floor before the new brain got it back up. Both swaps worked. Only one kept the duck walking.</p>
 
-      <p>
-        Both roads accept the same lie: that a robot's parts are too dangerous to
-        change while the robot is running. It does not have to be this way.
-        <strong>Cake</strong> is a supervisory control plane that runs
-        <em>in-process</em> and treats a running robot's parts as modular components
-        you can replace atomically, under supervision, and without dropping a tick.
-      </p>
+<p>Both stacks do the swap, and neither restarts the software: theirs accepted the new walking brain mid-walk, and so did ours. The difference is what happens to the duck in between. On their runtime, loading a walking brain means walking the duck back to its standing pose first; from the middle of a step, that ends with it on the floor. Cake changes the brain underneath the running loop instead, so the duck notices nothing except a slightly different gait, and carries on for the remaining 1.1&nbsp;m.</p>
+<p>Ten runs on an x86 machine back this up. All ten swaps completed. The session ID was identical before and after, the duck stayed upright, and the loop never missed a tick: 515 to 518 steps, every interval exactly 20&nbsp;ms. The gait does change at the swap: peak tilt rises from about 5° to 7° for half a second, and then settles again.</p>
 
-      <h2 id="pollen"><span class="n">03</span>We ran Pollen's stack the way Pollen intends it</h2>
+<h2 id="demo-b"><span class="n">04</span>Demo B: swapping the navigation target</h2>
+<p>The navigator is the part that decides where to go. In this run Cake replaces it twice while the duck walks, from a circle to a figure 8 and then to a slalom, with each of those loaded as a spare before the robot moved.</p>
 
-      <p>
-        Credit where it's due: Pollen's stack works, and it's serious engineering.
-        <code>scripts/duck-sim</code> starts the <em>real</em> <code>robotd</code>,
-        the same binary a duck on a shelf runs, with the servo bus swapped for
-        <code>duck_control::sim::RemoteIo</code>, driving a duck in MuJoCo. The
-        policies are their official ONNX set, loaded into named slots
-        (<code>walk</code>, <code>stand</code>, <code>sitstand</code>,
-        <code>ground_pick</code>, <code>kick_left</code>, <code>kick_right</code>,
-        <code>roulade</code>), and <code>robotctl</code> is how you talk to it. It's a
-        complete runtime featuring IPC, BLE, odometry, config, updater, and media.
-      </p>
+<figure class="fig">
+<div class="fig-media">
+  <video loop muted playsinline preload="none" poster="/assets/img/same-robot-same-brain/figure-04-poster.webp" width="1396" height="720">
+    <source src="/assets/img/same-robot-same-brain/figure-04.mp4" type="video/mp4">
+    <img src="/assets/img/same-robot-same-brain/figure-04-poster.webp" width="1396" height="720" alt="A Microduck walking in the simulator, its path bending from a circle to a figure 8 to a slalom without stopping.">
+  </video>
+  <button class="video-toggle" type="button" data-video-toggle aria-label="Play the video">Play</button>
+</div>
+<figcaption><b>Fig. 4</b><span>Microduck, a two-legged robot on 14 motors, switching live from circle → figure 8 → slalom. The walking brain keeps running 50 times a second while the navigator is replaced in mid-stride.</span></figcaption>
+</figure>
 
-      <p>We ran it. It stood up, walked on command, and held its loop:</p>
+<p>Each navigator steers toward its own shape. In 8 seconds the duck walks only part of it, so the path bends a different way after each swap, and the line never breaks. In the 24-second run, the walking brain sent the simulator 1,212 commands, about 50 a second. The duck covered about 2.7&nbsp;m along its path, measured every half second so the side-to-side sway of each step doesn't count. Cake reported the same session ID before and after both swaps.</p>
+<p>Across 4 runs, Cake swapped the navigator 8 times while the duck walked, and the duck never stopped or fell.</p>
 
-      <p class="readout">loop <b>50.0</b> of 50.0&nbsp;Hz <span class="sep">·</span> <b>0</b> missed</p>
+<h2 id="demo-c"><span class="n">05</span>Demo C: swapping the brain itself</h2>
+<p>Microduck's own software swaps its brains too, on the real robot. Here Cake does it in simulation, with the same command it used for the navigator, and the duck changes state: standing to walking, and walking to standing.</p>
 
-      <p>
-        And it can swap a policy live: <code>robotctl policy load walk &lt;file&gt;</code>
-        rebinds a slot with <code>robotd</code> never restarting. That's real. That's
-        the bar we were up against.
-      </p>
+<figure class="fig">
+<div class="fig-media"><img src="/assets/img/same-robot-same-brain/figure-05.png" width="1344" height="656" loading="lazy" alt="Two charts of forward speed through a policy swap: standing to walking reaches walking speed in under 1.5 seconds; walking to standing lurches, then stops."></div>
+<figcaption><b>Fig. 5</b><span>The duck's speed when the brain is swapped to change its state, walking to standing and standing to walking. Measured from <code>state/run-policy-swap/trace.csv</code> in half-second windows, on a 2-vCPU Linux cloud machine, 24 October 2026.</span></figcaption>
+</figure>
 
-      <p>Now here's what Cake changes.</p>
+<figure class="fig">
+<div class="fig-media">
+  <video loop muted playsinline preload="none" poster="/assets/img/same-robot-same-brain/figure-06-poster.webp" width="1242" height="640">
+    <source src="/assets/img/same-robot-same-brain/figure-06.mp4" type="video/mp4">
+    <img src="/assets/img/same-robot-same-brain/figure-06-poster.webp" width="1242" height="640" alt="A Microduck standing in the simulator, then walking after its brain is swapped for the walking policy.">
+  </video>
+  <button class="video-toggle" type="button" data-video-toggle aria-label="Play the video">Play</button>
+</div>
+<figcaption><b>Fig. 6</b><span>Swapping the robot's brain from standing to walking, in the same run.</span></figcaption>
+</figure>
 
-      <h2 id="compare"><span class="n">04</span>Cake vs Pollen, side by side</h2>
+<p>After the swap from standing to walking, the duck reached its walking speed in under 1.5 seconds. The other direction is rougher: in Fig.&nbsp;5 the duck lurched forward at about twice its walking speed before standing still, about 1.5 seconds after the swap. In our other runs the lurch was smaller, and the duck stayed on its feet in all 6.</p>
 
-      <p>Same robot. Same policy. Each run the way its authors intended.</p>
+<div class="table-wrap"><table class="data">
+<thead><tr><th>What Cake swapped</th><th>Runs</th><th>Swaps completed</th><th>Duck stayed upright</th><th>Same session ID before and after</th></tr></thead>
+<tbody>
+<tr><td data-label="What Cake swapped">Navigator, twice per run</td><td data-label="Runs">4</td><td data-label="Swaps completed">8 of 8</td><td data-label="Duck stayed upright">4 of 4</td><td data-label="Same session ID">4 of 4</td></tr>
+<tr><td data-label="What Cake swapped">Brain, standing to walking</td><td data-label="Runs">6</td><td data-label="Swaps completed">6 of 6</td><td data-label="Duck stayed upright">6 of 6</td><td data-label="Same session ID">6 of 6</td></tr>
+<tr><td data-label="What Cake swapped">Brain, walking to a different walking brain</td><td data-label="Runs">10</td><td data-label="Swaps completed">10 of 10</td><td data-label="Duck stayed upright">10 of 10</td><td data-label="Same session ID">10 of 10</td></tr>
+<tr><td data-label="What Cake swapped">Brain, walking to standing</td><td data-label="Runs">6</td><td data-label="Swaps completed">6 of 6</td><td data-label="Duck stayed upright">6 of 6</td><td data-label="Same session ID">6 of 6</td></tr>
+</tbody></table></div>
+<p><b>Table 1</b>. How the swaps behaved, run by run. The point is the last two columns: every swap completed, the duck stayed on its feet, and the session ID stayed the same, so only the named part changed while the other parts kept running.</p>
 
-      <table class="compare">
-        <thead>
-          <tr>
-            <th scope="col"><span class="sr-only">Property</span></th>
-            <th scope="col">Pollen · duck-sim</th>
-            <th scope="col">Cake · make cake</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>what it is</td>
-            <td data-label="Pollen">a full robot runtime (<code>robotd</code> + daemons)</td>
-            <td class="cake" data-label="Cake">an in-process supervisory kernel</td>
-          </tr>
-          <tr>
-            <td>the policy</td>
-            <td data-label="Pollen">the official <code>alpha_walking.onnx</code></td>
-            <td class="cake" data-label="Cake">the <strong>same bytes</strong>, compiled to one <code>.so</code></td>
-          </tr>
-          <tr>
-            <td>what runs the network</td>
-            <td data-label="Pollen"><code>ort</code> → <code>libonnxruntime.so</code></td>
-            <td class="cake" data-label="Cake">the compiled VM — <strong>no onnxruntime</strong></td>
-          </tr>
-          <tr>
-            <td>what you install</td>
-            <td data-label="Pollen">the daemon stack + <code>libonnxruntime.so</code></td>
-            <td class="cake" data-label="Cake">one 790&nbsp;KiB <code>.so</code>, <strong>zero runtime deps</strong></td>
-          </tr>
-          <tr>
-            <td>how modules talk</td>
-            <td data-label="Pollen"><code>robotd</code>'s own IPC</td>
-            <td class="cake" data-label="Cake">zero-copy tables + declared contracts + epoch guards</td>
-          </tr>
-          <tr>
-            <td>the 50 Hz loop</td>
-            <td data-label="Pollen">50.0 / 50.0&nbsp;Hz, 0 missed</td>
-            <td class="cake" data-label="Cake">50&nbsp;Hz, <strong>held through the swap</strong></td>
-          </tr>
-          <tr>
-            <td>live replacement</td>
-            <td data-label="Pollen"><code>robotctl policy load &lt;slot&gt; &lt;file&gt;</code></td>
-            <td class="cake" data-label="Cake"><code>replace-slot</code></td>
-          </tr>
-          <tr>
-            <td>what you can replace</td>
-            <td data-label="Pollen">a <strong>policy</strong> slot (7 of them), live</td>
-            <td class="cake" data-label="Cake"><strong>any</strong> binding — a trajectory provider, or the policy leaf</td>
-          </tr>
-          <tr>
-            <td>after a swap</td>
-            <td data-label="Pollen"><code>robotd</code> pid unchanged, loop held</td>
-            <td class="cake" data-label="Cake">resident session unchanged, loop held</td>
-          </tr>
-          <tr>
-            <td>time to first inference</td>
-            <td data-label="Pollen">121&nbsp;ms</td>
-            <td class="cake" data-label="Cake">7.9&nbsp;ms</td>
-          </tr>
-          <tr>
-            <td>the runtime you avoid</td>
-            <td data-label="Pollen">onnxruntime — a 21&nbsp;MB shared library, ~130&nbsp;MB installed</td>
-            <td class="cake" data-label="Cake">nothing; the artifact <em>is</em> the policy</td>
-          </tr>
-        </tbody>
-      </table>
+<h2 id="limits"><span class="n">06</span>What this demo does not show</h2>
+<ul>
+<li><strong>A real robot.</strong> Everything runs in a simulator, and we have not connected Cake to a real Microduck or to its own software. The duck's own computer uses an ARM chip, a <a href="https://github.com/pollen-robotics/microduck">Rockchip RK3566</a>, and this demo's Cake release only runs on Intel and AMD computers.</li>
+<li><strong>Real-world timing.</strong> In the navigator demo, the simulator waits for each command from Cake, so a slow swap would only pause the walk. A real robot does not wait. This demo does not measure how long a swap takes.</li>
+<li><strong>Your own parts.</strong> This release runs only the modules Shinro built, all loaded when Cake starts. You can't build your own module with it, or add one to a running Cake.</li>
+</ul>
 
-      <p>What Cake gives you that a file swap can't:</p>
+<h2 id="try-it"><span class="n">07</span>Try it yourself</h2>
+<p>On our 2-vCPU Linux cloud machine it took about 2 minutes from clone to first result, most of it installing about 170&nbsp;MB of Python packages. You need no GPU, no screen and no robot.</p>
 
-      <ul>
-        <li>
-          <strong>A policy that ships as one artifact.</strong> The same network,
-          compiled by the Shinro compiler to a single 790&nbsp;KiB <code>.so</code>
-          binary with <strong>no onnxruntime, no numpy, no Python</strong> in the
-          process. The binary has deterministic memory allocated at compile time,
-          which prevents the footprint creep commonly seen with onnxruntime on edge
-          devices.
-        </li>
-        <li>
-          <strong>Replacement that is a transaction.</strong> <code>replace-slot</code>
-          computes the dependency closure, drains the retiring generation, rebinds
-          under an atomic epoch guard, publishes the new binding snapshot, and
-          reclaims the old, as one supervised update, with cryptographic capsule
-          admission and versioned contracts checked <em>before</em> it runs.
-        </li>
-        <li>
-          <strong>Any binding is swappable, not just a policy slot.</strong> In a
-          file-swapping runtime, dynamic reloading is bespoke: the daemon must write
-          dedicated plumbing for each specific asset type it anticipates reloading.
-          Pollen's stack has no counterpart for hot-swapping a trajectory provider,
-          because the command is an internal intent (pad / scheduler / deadman), not
-          a hot-reloadable slot. Cake doesn't care what a module computes; whether
-          it's a trajectory generator, an estimator, or a policy leaf, as long as it
-          matches its versioned descriptor, <code>replace-slot</code> hot-swaps it
-          using the exact same kernel transaction.
-        </li>
-      </ul>
+<h3>What you need</h3>
+<ul>
+<li>Linux on an Intel or AMD 64-bit processor, with glibc 2.34 or newer (check with <code>ldd --version</code>), such as Ubuntu 24.04.</li>
+<li>python3 version 3.12 or newer with its <code>venv</code> module (on Ubuntu, the <code>python3-venv</code> package), plus git, make and curl.</li>
+</ul>
+<p>The Cake programs in this demo are only published for Intel and AMD Linux, so Macs and ARM boards can't run them.</p>
 
-      <aside class="note">
-        <p>
-          Pollen's offline <code>policy-rehearsal</code> reports ~14&nbsp;ms for a
-          single <code>session.run</code>, while a plain onnxruntime run of the same
-          model in the same process is ~17&nbsp;µs, so that's their harness/config,
-          not the network, and we're not going to print it as a win. The real
-          headline isn't the forward pass anyway. It's
-          <strong>the layer around it</strong>: a dependency-free artifact, a
-          transactional replacement instead of a file swap, and a robot whose parts
-          are supervised.
-        </p>
-      </aside>
-
-      <h2 id="demo"><span class="n">05</span>The demo: swapping a robot's trajectory mid-stride</h2>
-
-      <p>On the Cake plane, Microduck decomposes into supervised modules:</p>
-
-      <ul>
-        <li>
-          <strong>The policy module</strong> runs the compiled inference VM: 61-D
-          observation in, 14-D joint offsets out, at 50&nbsp;Hz (a hard 20&nbsp;ms
-          tick budget).
-        </li>
-        <li>
-          <strong>The trajectory module</strong> reads the trunk pose, runs
-          closed-loop pure pursuit, publishes a 13-D command block.
-        </li>
-      </ul>
-
-      <figure class="fig diagram">
-        <svg viewBox="0 0 700 400" role="img" aria-labelledby="arch-title arch-desc">
-          <title id="arch-title">Cake runtime topology for the Microduck demo</title>
-          <desc id="arch-desc">A Cake supervisory resident contains a trajectory module that writes a 13-D command table guarded by an epoch, and a walking policy module that reads it. The resident owns a Unix domain socket carrying a 61-D observation and a 14-D action to a MuJoCo physics simulation of the Microduck.</desc>
-          <defs>
-            <marker id="arw" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-              <path d="M0 0L10 5L0 10z" fill="var(--line-strong)"></path>
-            </marker>
-          </defs>
-
-          <rect x="4" y="4" width="692" height="250" rx="11" fill="none" stroke="var(--line-strong)" stroke-width="1.2"></rect>
-          <text x="20" y="26" class="mono" font-size="9" letter-spacing="1.6" fill="var(--muted)">CAKE SUPERVISORY RESIDENT</text>
-          <text x="680" y="26" text-anchor="end" class="mono" font-size="8.5" letter-spacing="0.6" fill="var(--muted)">session 01a13cce6984…</text>
-
-          <!-- trajectory module -->
-          <rect x="20" y="40" width="196" height="96" rx="7" fill="var(--surface)" stroke="var(--line-strong)"></rect>
-          <text x="36" y="66" font-size="13" font-weight="600" fill="var(--ink)">Trajectory module</text>
-          <line x1="36" y1="76" x2="200" y2="76" stroke="var(--line)"></line>
-          <text x="36" y="98" class="mono" font-size="9.6" fill="var(--muted)">closed-loop pure pursuit</text>
-          <text x="36" y="115" class="mono" font-size="9.6" fill="var(--muted)">4-D trunk pose in</text>
-
-          <!-- epoch guard -->
-          <rect x="232" y="40" width="184" height="96" rx="7" fill="color-mix(in srgb, var(--accent) 5%, transparent)" stroke="var(--accent)" stroke-width="1.1" stroke-dasharray="4 3.5"></rect>
-          <text x="246" y="60" class="mono" font-size="8.4" letter-spacing="1.4" fill="var(--accent)">EPOCH GUARD</text>
-          <text x="246" y="82" class="mono" font-size="9.8" fill="var(--ink)">13-D command table</text>
-          <text x="246" y="99" class="mono" font-size="9.8" fill="var(--muted)">live_snapshot</text>
-          <text x="246" y="116" class="mono" font-size="9.8" fill="var(--muted)">atomic rebind</text>
-
-          <!-- policy module -->
-          <rect x="432" y="40" width="248" height="96" rx="7" fill="var(--surface)" stroke="var(--line-strong)"></rect>
-          <text x="448" y="66" font-size="13" font-weight="600" fill="var(--ink)">Walking policy</text>
-          <line x1="448" y1="76" x2="664" y2="76" stroke="var(--line)"></line>
-          <text x="448" y="98" class="mono" font-size="9.6" fill="var(--muted)">compiled VM · 50 Hz</text>
-          <text x="448" y="115" class="mono" font-size="9.6" fill="var(--muted)">14-D joint action out</text>
-
-          <!-- module links -->
-          <line x1="216" y1="88" x2="228" y2="88" stroke="var(--line-strong)" stroke-width="1.2" marker-end="url(#arw)"></line>
-          <line x1="416" y1="88" x2="428" y2="88" stroke="var(--line-strong)" stroke-width="1.2" marker-end="url(#arw)"></line>
-
-          <!-- socket strip -->
-          <rect x="20" y="160" width="660" height="38" rx="6" fill="var(--surface)" stroke="var(--line)"></rect>
-          <text x="350" y="178" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--ink)">Unix domain socket</text>
-          <text x="350" y="192" text-anchor="middle" class="mono" font-size="9" fill="var(--muted)">61-D observation in · 14-D action out</text>
-
-          <!-- links to plant -->
-          <line x1="300" y1="198" x2="300" y2="308" stroke="var(--line-strong)" stroke-width="1.2" marker-end="url(#arw)"></line>
-          <line x1="400" y1="308" x2="400" y2="204" stroke="var(--line-strong)" stroke-width="1.2" marker-end="url(#arw)"></line>
-          <text x="290" y="292" text-anchor="end" class="mono" font-size="9" fill="var(--muted)">14-D action</text>
-          <text x="410" y="292" class="mono" font-size="9" fill="var(--muted)">61-D observation + pose</text>
-
-          <!-- plant -->
-          <rect x="90" y="312" width="520" height="80" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
-          <text x="114" y="340" font-size="12.5" font-weight="600" fill="var(--ink)">MuJoCo physics simulation</text>
-          <text x="114" y="358" class="mono" font-size="9.4" fill="var(--muted)">Microduck biped · 14 servos · 25 cm</text>
-          <line x1="114" y1="374" x2="586" y2="374" stroke="var(--line)" stroke-dasharray="2 5"></line>
-          <text x="586" y="358" text-anchor="end" class="mono" font-size="9.4" fill="var(--muted)">plant · 50 Hz</text>
-        </svg>
-      </figure>
-
-      <p>
-        The trajectory module is pure dataflow. As the robot walks, we trigger live
-        module updates through Cake's administration probe:
-      </p>
-
-      <ul>
-        <li><strong>0–8&nbsp;s</strong> — the robot follows a circle.</li>
-        <li><strong>8&nbsp;s</strong> — Cake runs <code>replace-slot</code> → figure-8.</li>
-        <li><strong>16&nbsp;s</strong> — Cake runs <code>replace-slot</code> → slalom.</li>
-      </ul>
-
-      <h3>What happened to the robot?</h3>
-
-      <p>
-        Nothing. It never stumbled, never restarted, never dropped a tick. The
-        transaction completed, the session identity stayed bit-for-bit identical,
-        and the walk continued as the robot adjusted to its new target trajectories.
-      </p>
-
-      <p>
-        Reproduce the whole sequence yourself: the walk, both swaps, and the log, with <a href="https://github.com/Shinro-xyz/shinro-demo-microduck">the Microduck demo on GitHub</a>.
-      </p>
-
-      <h2 id="replace-slot"><span class="n">06</span>Under the hood: what <code>replace-slot</code> actually does</h2>
-
-      <p>
-        In traditional systems, swapping a live component means pausing the world,
-        resetting buffers, or praying your mutexes don't invert priorities. Cake
-        treats a module upgrade as an atomic transactional closure:
-      </p>
-
-      <ol class="flow">
-        <li>
-          <span class="n">01</span>
-          <b>Compute closure</b>
-          <span>who reads this slot?</span>
-        </li>
-        <li>
-          <span class="n">02</span>
-          <b>Drain</b>
-          <span>prepare_quiesce hook</span>
-        </li>
-        <li>
-          <span class="n">03</span>
-          <b>Rebind</b>
-          <span>live_snapshot under epoch guard</span>
-        </li>
-        <li>
-          <span class="n">04</span>
-          <b>Publish &amp; activate</b>
-          <span>new binding snapshot</span>
-        </li>
-        <li>
-          <span class="n">05</span>
-          <b>Reclaim</b>
-          <span>retired generation's memory</span>
-        </li>
-      </ol>
-
-      <figure class="fig">
-        <div class="fig-media">
-          <img src="/assets/img/microduck-trajectory-swap.png" width="1206" height="643" loading="lazy" alt="Left: trunk path coloured by trajectory module, with markers at the two swaps; below it, cross-track error drops after each swap. Right: a timeline showing the policy module running throughout while the trajectory module advances circle, eight, slalom, with the transaction phases beneath.">
-        </div>
-        <figcaption>
-          <b>Fig. 2</b>
-          <span>
-            Timeline telemetry from Cake's event flight recorder: the policy module
-            runs uninterrupted across the whole axis, while generations of the
-            trajectory module advance through drain, rebind and activation.
-          </span>
-        </figcaption>
-      </figure>
-
-      <p>The guarantees doing the work here:</p>
-
-      <ul>
-        <li>
-          <strong>Admission before execution.</strong> Capsules are content-addressed
-          and cryptographically signed. An unverified or ABI-mismatched blob cannot
-          enter a running resident.
-        </li>
-        <li>
-          <strong>Declared, versioned interfaces.</strong> Descriptors declare exact
-          contracts with semantic versioning, resolved statically in a hashed Plan
-          before a single tick runs.
-        </li>
-        <li>
-          <strong>The epoch guard.</strong> The policy reads its command inputs under
-          an epoch guard, so it always sees a consistent slice: no torn reads, no
-          half-written vectors, no locking overhead.
-        </li>
-        <li>
-          <strong>Unbroken session identity.</strong> Across every swap, the
-          resident's session identity is identical. It never re-runs
-          <code>main()</code>, never re-initializes device sockets, and never leaves
-          unmonitored dead time.
-        </li>
-      </ul>
-
-      <p>
-        One thing that list does not include: fault containment. Everything above
-        runs in one address space, so a bad write inside a capsule can take the
-        session with it, and there is no sandbox for untrusted capsules. What the
-        kernel guarantees is the transaction, not the fault.
-      </p>
-
-      <h2 id="policy"><span class="n">07</span>The harder half: swapping the policy itself</h2>
-
-      <p>
-        The trajectory module is pure dataflow, which is what makes it a clean thing
-        to replace. The policy is harder, because in the obvious design the policy
-        is the thing that owns the loop. A module that owns the clock cannot be
-        replaced without taking the clock with it: <code>replace-slot</code> drains
-        the retiring generation, the thread that owns the sim socket goes down, and
-        the plant link goes with it.
-      </p>
-
-      <p>
-        We ran that first. The fused policy module owns the socket and the
-        50&nbsp;Hz tick; swapping it returns <code>COMPLETED</code>, the session
-        identity is unchanged, and the walk ends, the sim client sees the connection
-        go away and stops, about two seconds into a six-second run. The transaction
-        is atomic, but <strong>atomic is not the same as bumpless</strong>. The swap
-        completed and the robot stopped walking.
-      </p>
-
-      <p>
-        The fix is a topology change, not a special case in the kernel. Move the
-        socket and the clock into a stable <code>bridge</code> module that is never
-        swapped, and make the policy a leaf the bridge consumes with a live binding.
-        Through the swap the bridge keeps ticking, re-reads the policy's action table
-        from the epoch-guarded binding snapshot, and when the table address changes, meaning a new policy
-        generation has been committed, cross-fades from the
-        outgoing network's action to the incoming one over 25 ticks. The blend
-        happens in the one place that sees both generations at once, so the hand-over
-        is bumpless.
-      </p>
-
-      <p>
-        Fused versus split: the same transaction, the same session, and only one of
-        them still walking.
-      </p>
-
-      <ul>
-        <li>
-          <strong>Fused policy swap.</strong> The transaction reads
-          <code>COMPLETED</code> and the session identity is unchanged, but the plant
-          link is torn down. The sim client exits and the duck stops at the swap.
-        </li>
-        <li>
-          <strong>Split policy swap</strong> (<code>make policy-swap</code>). The same
-          transaction, the same unchanged session, but the stable bridge holds the
-          plant link. The duck stands, then walks.
-        </li>
-      </ul>
-
-      <p>
-        Run it: <code>make policy-swap</code>. The duck balances in place under the
-        standing network for the first two seconds, Cake points the
-        <code>policy</code> slot at the walking capsule with the same
-        <code>replace-slot</code> it used for the trajectory, and then it walks the
-        circle. The transaction reads <code>COMPLETED</code>, the session identity is
-        bit-for-bit unchanged, and the bridge held the plant link for the whole
-        window: steps=511, travel=1.155&nbsp;m, speed=0.113&nbsp;m/s.
-      </p>
-
-      <figure class="fig">
-        <div class="fig-media">
-          <img src="/assets/img/microduck-policy-swap.png" width="1165" height="643" loading="lazy" alt="Left: trunk path coloured by which policy drove it, stand then walk, with trunk speed rising after the swap marker. Right: the timeline shows the bridge running throughout while only the policy leaf's generation changes.">
-        </div>
-        <figcaption>
-          <b>Fig. 3</b>
-          <span>
-            The policy swap, drawn the way the trajectory swap is: the trunk path
-            coloured by which policy drove it (stand before the dashed marker, walk
-            after), the trunk speed beside it — near zero while it balances,
-            ~0.2&nbsp;m/s once it walks — and the right panel showing the stable
-            bridge running throughout while only the policy leaf's generation moves.
-          </span>
-        </figcaption>
-      </figure>
-
-      <p>
-        One honest caveat on bumpless transfer. The swap from stand → walk succeeds
-        because the standing policy holds the duck near zero velocity while the
-        walking network phases in. The reverse, walk → stand, completes the software
-        transaction and holds the link just as cleanly, but the duck falls (tilt
-        ≈&nbsp;175°). A runtime swap guarantees memory and execution continuity, but
-        it cannot invent physical state continuity: the standing network expects a
-        static base and is not an active mid-gait recovery controller. Linearly
-        cross-fading raw joint actions across 25 ticks bridges the software lifecycle,
-        but true bidirectional transfer across disparate gaits ultimately requires
-        dynamic phase matching or an intermediate deceleration manifold, which is a
-        control theory and locomotion problem rather than a kernel problem.
-      </p>
-
-      <p>
-        And because the split's bridge and leaf each own a 50&nbsp;Hz thread, they are
-        loosely coupled: the heavy render profile can starve one of them and the duck
-        can fall before the swap, which is why the demo defaults to the lighter one.
-        Scheduler lockstep would remove that sensitivity.
-      </p>
-
-      <p>
-        It ships as its own release. The policy-swap bundle carries the split, the
-        stable <code>bridge</code>, the standing and walking policy leaves, and the
-        trajectories, and no fused capsule; it is versioned separately from the
-        trajectory demo so the two can be released independently.
-      </p>
-
-      <h2 id="try"><span class="n">08</span>Try it on your machine (in two minutes)</h2>
-
-      <p>
-        No physical Microduck required — it is a complete, self-contained MuJoCo
-        simulation:
-      </p>
-
-      <div class="code-block"><div class="pre-head"><span>shell · zsh</span><button class="copy" type="button">Copy</button></div><pre><code><span class="c"># 1. Clone the demo repo</span>
-git clone https://github.com/Shinro-xyz/shinro-demo-microduck.git
+<h3>1. Install everything (about 1.5 minutes)</h3>
+<div class="code-block">
+<p class="pre-head"><span>shell</span><button class="copy" type="button">Copy</button></p>
+<pre><code>git clone https://github.com/Shinro-xyz/shinro-demo-microduck.git
 cd shinro-demo-microduck
-
-<span class="c"># 2. Set up and pull the verified Cake release</span>
 make venv
 make install PYTHON=.venv/bin/python
-make fetch-cake PYTHON=.venv/bin/python
+make fetch-cake PYTHON=.venv/bin/python</code></pre>
+</div>
+<p><code>make venv</code> creates a separate Python environment for the demo, so nothing is installed system-wide.</p>
 
-<span class="c"># 3. Run the live-swap walk (circle → eight → slalom)</span>
-make cake PYTHON=.venv/bin/python</code></pre></div>
+<h3>2. Swap the navigator while the duck walks (about 25 seconds)</h3>
+<div class="code-block">
+<p class="pre-head"><span>shell</span><button class="copy" type="button">Copy</button></p>
+<pre><code>make cake PYTHON=.venv/bin/python GIF=</code></pre>
+</div>
+<p>The duck walks for 24 seconds, and Cake swaps its navigator at 8 and 16 seconds. The run ends like this (trimmed; your session ID will differ):</p>
+<div class="code-block">
+<p class="pre-head"><span>output</span><button class="copy" type="button">Copy</button></p>
+<pre><code>microduck-cake: swapping trajectory -&gt; eight
+microduck-cake: transaction_phase COMPLETED
+microduck-cake: swapping trajectory -&gt; slalom
+microduck-cake: transaction_phase COMPLETED
+microduck-cake: session unchanged (01a16ac778917f2881bb3a809fa62db0); trajectory slot unchanged
+walk: steps=1212 travel=1.732 m speed=0.071 m/s tilt=1.7 deg z=0.117 m
+microduck-cake: microduck Cake demo: PASS</code></pre>
+</div>
+<p><code>COMPLETED</code> means the swap went through, and <code>session unchanged</code> means Cake never restarted. <code>steps=1212</code> is the number of commands the simulator received: about 50 a second for 24 seconds. <code>tilt</code> and <code>z</code> say the duck ended upright. <code>travel</code> and <code>speed</code> use the straight line from start to finish, so they read lower than the distance and speed along the path.</p>
 
-      <p>
-        A successful run takes about 24 seconds: the duck walks the circle for
-        eight seconds, takes the figure-eight at 8&nbsp;s and the slalom at
-        16&nbsp;s, and does not stop. Both transactions read <code>COMPLETED</code>
-        against the same session id.
-      </p>
+<h3>3. Swap the brain (about 12 seconds per run)</h3>
+<div class="code-block">
+<p class="pre-head"><span>shell</span><button class="copy" type="button">Copy</button></p>
+<pre><code>make fetch-cake-policy-swap PYTHON=.venv/bin/python
+make policy-swap PYTHON=.venv/bin/python PGIF=
+make policy-swap PYTHON=.venv/bin/python PGIF= FROM=walk TO=stand</code></pre>
+</div>
+<p>The duck starts on the standing brain, and Cake swaps in the walking one after 2 seconds. The last command goes the other way. Each run ends with a PASS line.</p>
 
-      <p>You get the full telemetry:</p>
+<h3>4. Swap one walking brain for another (about 12 seconds per run)</h3>
+<div class="code-block">
+<p class="pre-head"><span>shell</span><button class="copy" type="button">Copy</button></p>
+<pre><code>make fetch-cake-walk-swap PYTHON=.venv/bin/python
+make walk-swap PYTHON=.venv/bin/python PGIF=</code></pre>
+</div>
+<p>This is the comparison in Demo A: the same duck, the same request to walk, with a second walking brain swapped in mid-walk instead of the standing one. Each run ends with a PASS line, and the duck keeps walking through the swap.</p>
 
-      <ul>
-        <li>
-          <code>state/media/microduck_cake_walk.gif</code> — the rendered walk,
-          colour-coded by trajectory.
-        </li>
-        <li>
-          <code>state/media/microduck_cake_swap.png</code> — the transaction phase
-          diagram.
-        </li>
-        <li>
-          <code>state/run/swaps.json</code> — proof that each transaction hit
-          <code>COMPLETED</code> while the session identity stayed unchanged.
-        </li>
-      </ul>
+<h3>5. Look at the data</h3>
+<p>Each run writes its files to <code>state/run/</code> (navigator) or <code>state/run-policy-swap/</code> (brain and walking-brain swaps): <code>trace.csv</code>, the duck's position 50 times a second, and a record of each swap, <code>swaps.json</code> or <code>policy_swap.json</code>. The two charts above were drawn from these files. A new run of the same command deletes the previous run's files, so copy them first if you want to keep them.</p>
 
-      <p>
-        Want the one that turns heads? The policy swap is its own release:
-        <code>make fetch-cake-policy-swap</code> then <code>make policy-swap</code>
-        swaps the <strong>policy</strong> itself: a standing network for a walking
-        one, live, without the walk stopping.
-      </p>
+<h3>Why <code>GIF=</code>?</h3>
+<p>It turns off the animated video. On our 2-vCPU machine, recording it slowed the navigator run to about a third of real time and broke all 4 brain-swap runs. On a faster computer, try without <code>GIF=</code> and <code>PGIF=</code> to get an animation in <code>state/media/</code>. If the brain swap then fails, put them back.</p>
 
-      <h2 id="takeaway"><span class="n">09</span>The takeaway</h2>
+<h2 id="troubleshooting"><span class="n">08</span>If something goes wrong</h2>
+<div class="table-wrap"><table class="data">
+<thead><tr><th>You see</th><th>What to do</th></tr></thead>
+<tbody>
+<tr><td data-label="You see">AF_UNIX path too long</td><td data-label="What to do">Linux limits the length of the folder path. Clone into a shorter folder, or put <code>MD_STATE_DIR=/tmp/microduck</code> in front of every <code>make cake</code> and <code>make policy-swap</code> command; the run files then go to that folder.</td></tr>
+<tr><td data-label="You see">the plant link did not survive the policy swap</td><td data-label="What to do">Turn the video off with <code>PGIF=</code>.</td></tr>
+<tr><td data-label="You see">no Cake release is published for aarch64, or is not a published target</td><td data-label="What to do">Your computer is not Intel or AMD Linux: see What you need.</td></tr>
+<tr><td data-label="You see">No module named pip, or .venv/bin/python: No such file or directory</td><td data-label="What to do">Run <code>make venv</code> first, as in step 1. On Ubuntu, install <code>python3-venv</code> if <code>make venv</code> fails.</td></tr>
+</tbody></table></div>
 
-      <p>
-        Modern robotics doesn't need heavier frameworks. It needs better systems
-        guarantees.
-      </p>
-
-      <p>
-        Cake takes the one policy everyone already has and gives it what a shipped
-        product actually needs: a single dependency-free artifact, cryptographic
-        admission, verified interface contracts, and atomic in-process lifecycle
-        management, with the lifecycle guarantees of a microkernel and the speed of raw memory.
-      </p>
-
-      <blockquote class="pull">
-        <p>Pollen gives you a robot. Cake gives you a robot whose parts are supervised.</p>
-      </blockquote>
-
-      <div class="post-end">
-        <p>Read more, or reproduce it yourself:</p>
-        <div class="links">
-          <a class="btn btn-primary" href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo ↗</a>
-          <a class="btn btn-ghost" href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/docs/cake-control-plane.md">Cake control plane ↗</a>
-        </div>
-        <p class="actions-note">
-          Demo is free for personal, educational and non-commercial use;
-          commercial deployment requires a licence from Shinro SAS.
-          <a href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/LICENSE">Licence ↗</a>
-        </p>
-        <p class="actions-note">
-          Corrections and questions:
-          <a href="https://github.com/Shinro-xyz/shinro-demo-microduck/issues">open an issue</a>,
-          or <a href="https://shinro.dev">talk to us</a>.
-        </p>
-
-        <a class="next-post" href="/writing/name-it-then-move-it/">
-          <span class="k">Next note · 002</span>
-          <b>Name it, then move it: the authority around a policy that runs beside Cake →</b>
-        </a>
-        <p class="actions-note" style="margin-top: 1.1rem;"><a href="/writing/">All writing ↗</a></p>
-      </div>
-
+<h2 id="credits"><span class="n">09</span>Credits and licence</h2>
+<p><a href="https://github.com/pollen-robotics/microduck">Microduck</a> is an open-source robot by Pollen Robotics, which <a href="https://aibusiness.com/robotics/hugging-face-programmable-walking-duck-robot">Hugging Face acquired in 2025</a>. Its walking network and its 3D model come from Pollen's open-source work. We did not retrain the walking network or change the robot model.</p>
+<p>Pollen Robotics is not affiliated with Shinro, and neither Pollen nor Hugging Face has endorsed this demo.</p>
+<p>The demo's scripts and the Cake programs it downloads are free for personal, educational and non-commercial use, under the Business Source License 1.1. Commercial use needs a licence from Shinro. Pollen's files keep their own licences, listed in the repository's NOTICE file.</p>
+<p>Questions or corrections: <a href="https://github.com/Shinro-xyz/shinro-demo-microduck/issues">open an issue</a>.</p>
     </article>
   </div>
 </main>
@@ -708,19 +312,14 @@ make cake PYTHON=.venv/bin/python</code></pre></div>
           <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck">Microduck demo</a></li>
           <li><a href="https://github.com/Shinro-xyz/shinro-demo-microduck/blob/main/docs/cake-control-plane.md">Cake control plane</a></li>
           <li><a href="https://github.com/shinro-dev/kiwi-cake-demo">LeKiwi supervision demo</a></li>
-          <li><a href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">LeKiwi four-click demo</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h2>Elsewhere</h2>
         <ul>
-          <li><a href="https://shinro.dev">shinro.dev · product</a></li>
-          <li><a href="https://docs.shinro.dev">Documentation</a></li>
           <li><a href="https://github.com/shinro-dev">GitHub · shinro-dev</a></li>
           <li><a href="https://github.com/Shinro-xyz">GitHub · Shinro-xyz</a></li>
           <li><a href="/writing/">Writing</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/feed.xml">RSS</a></li>
         </ul>
       </div>
     </div>
