@@ -61,14 +61,14 @@
       <p class="eyebrow">Systems note · 001</p>
       <h1>
         Change a walking robot's software without stopping it
-        <span class="h1-sub">Swap the navigator, then the brain. The duck keeps walking.</span>
+        <span class="h1-sub">Any part, swapped mid-stride.</span>
       </h1>
       <p class="lede">
-        You will run Microduck, the small open-source walking robot from Pollen
-        Robotics, part of Hugging Face, in a physics simulator on your computer.
-        While it walks, you will replace the part of its software that decides where
-        it goes. The duck keeps walking, and the program in charge of it never
-        restarts.
+        You can replace a walking robot's brain while it is walking. Not pause it,
+        not hold it up: the part that decides where it goes and the brain that keeps
+        it upright can both be swapped mid-stride, and the duck carries on. The program
+        that does the swapping is Cake, and Microduck, the small open-source duck from
+        Pollen Robotics, is where you can watch it.
       </p>
       <p class="actions-note">
         No robot, no GPU, about two minutes:
@@ -119,7 +119,7 @@
     </nav>
 
     <article class="prose">
-<p>Then you will go one step further and swap the brain itself, mid-stride. Everything runs in simulation, on a Linux PC with an Intel or AMD processor: nothing to buy, nothing to plug in.</p>
+<p>It is a 25&nbsp;cm duck that walks on two legs and 14 motors. Everything below runs in a simulator, on an Intel or AMD Linux machine.</p>
 
 <h2 id="the-problem"><span class="n">01</span>The problem: you can't pause a walking robot</h2>
 <p>A walking robot needs its software running every moment, even to stand still. In its standing pose, Microduck's centre of gravity sits about 5&nbsp;mm in front of its ankles. Its walking brain, a small neural network, keeps it balanced by correcting its legs 50 times a second.</p>
@@ -128,7 +128,7 @@
 <p>Microduck's own software avoids this for its brains. It keeps one per move, from walking to roller skating, and switches between them while the duck runs. It can even <a href="https://github.com/pollen-robotics/microduck/blob/main/docs/robot/cheatsheet.md">load a new walking brain from the Hugging Face Hub</a> without restarting. So the real question is: <strong>can every part be changed like that, while the others keep the robot on its feet?</strong></p>
 
 <h2 id="the-solution"><span class="n">02</span>The solution: give each part its own slot</h2>
-<p>Cake is a program that runs each part of a robot's software as a separate module, in its own slot. While the robot walks, one command switches a slot from one module to another, and the other modules keep running.</p>
+<p>Cake runs each part of a robot's software as a separate module, in its own slot. While the robot walks, one command switches a slot from one module to another, and the other modules keep running.</p>
 <p>Microduck's own software already swaps its walking brain. What Cake adds is that the slot isn't reserved for brains: anything with a declared set of inputs and outputs can sit in it, a navigator now, a filter or a behaviour someone writes later. That's the difference between shipping a robot and shipping one you can maintain: a route change, a better-trained brain or a bug fix goes in while the duck keeps working, and a bad brain comes back out the same way. Each part ships as one small self-contained program, so there's nothing else to install on the robot.</p>
 <p>Pollen's runtime can swap its brains too, but it walks the robot home first, as <a href="https://github.com/pollen-robotics/microduck/blob/d7560ef059c73fab4177eb247c1774013f6feb9d/docs/design/policy-channel-design.md#L677">its policy-channel notes</a> say. With Cake, no such return happens during the policy swap. It's the difference between a service that goes down for maintenance and one that doesn't.</p>
 
@@ -155,7 +155,7 @@
 <figcaption><b>Fig. 3</b><span>Comparing Cake (green) with Pollen Robotics' own runtime (amber) for Microduck, on the same two walking brains.</span></figcaption>
 </figure>
 
-<p>Same robot, same two walking brains, same speed asked for. Ours (green) never stops: 1.1&nbsp;m from where it started. Theirs (amber) gets 15&nbsp;cm, and the flat middle of the chart is the 1.4 seconds it spent on the floor before the new brain got it back up. Both swaps worked. Only one kept the duck walking.</p>
+<p>Same robot, same two walking brains, same speed asked for. Ours (green) never stops: 1.1&nbsp;m from where it started. Theirs (amber) gets 15&nbsp;cm, and the flat middle of the chart is the 1.4 seconds it spent on the floor: their swap landed too, and Pollen's own <code>velstand</code> command is what stood the duck back up. Both swaps worked. Only one kept the duck walking.</p>
 
 <p>Both stacks do the swap, and neither restarts the software: theirs accepted the new walking brain mid-walk, and so did ours. The difference is what happens to the duck in between. On their runtime, loading a walking brain means walking the duck back to its standing pose first; from the middle of a step, that ends with it on the floor. Cake changes the brain underneath the running loop instead, so the duck notices nothing except a slightly different gait, and carries on for the remaining 1.1&nbsp;m.</p>
 <p>Ten runs on an x86 machine back this up. All ten swaps completed. The session ID was identical before and after, the duck stayed upright, and the loop never missed a tick: 515 to 518 steps, every interval exactly 20&nbsp;ms. The gait does change at the swap: peak tilt rises from about 5° to 7° for half a second, and then settles again.</p>
@@ -196,7 +196,7 @@
 <figcaption><b>Fig. 6</b><span>Swapping the robot's brain from standing to walking, in the same run.</span></figcaption>
 </figure>
 
-<p>After the swap from standing to walking, the duck reached its walking speed in under 1.5 seconds. The other direction is rougher: in Fig.&nbsp;5 the duck lurched forward at about twice its walking speed before standing still, about 1.5 seconds after the swap. In our other runs the lurch was smaller, and the duck stayed on its feet in all 6.</p>
+<p>After the swap from standing to walking, the duck reached its walking speed in under 1.5 seconds. The other direction is rougher: in Fig.&nbsp;5 the duck lurched forward at about twice its walking speed before standing still, about 1.5 seconds after the swap. The standing brain expects a robot that is already still, so the hand-over is not smooth. In our other runs the lurch was smaller, and the duck stayed on its feet in all 6.</p>
 
 <div class="table-wrap"><table class="data">
 <thead><tr><th>What Cake swapped</th><th>Runs</th><th>Swaps completed</th><th>Duck stayed upright</th><th>Same session ID before and after</th></tr></thead>
@@ -206,7 +206,13 @@
 <tr><td data-label="What Cake swapped">Brain, walking to a different walking brain</td><td data-label="Runs">10</td><td data-label="Swaps completed">10 of 10</td><td data-label="Duck stayed upright">10 of 10</td><td data-label="Same session ID">10 of 10</td></tr>
 <tr><td data-label="What Cake swapped">Brain, walking to standing</td><td data-label="Runs">6</td><td data-label="Swaps completed">6 of 6</td><td data-label="Duck stayed upright">6 of 6</td><td data-label="Same session ID">6 of 6</td></tr>
 </tbody></table></div>
-<p><b>Table 1</b>. How the swaps behaved, run by run. The point is the last two columns: every swap completed, the duck stayed on its feet, and the session ID stayed the same, so only the named part changed while the other parts kept running.</p>
+<p><b>Table 1</b>. How the swaps behaved, run by run. Every swap completed, the duck stayed on its feet, and the session ID stayed the same, so only the named part changed while the other parts kept running.</p>
+<p>The runs behind these numbers, like the commands below, are made with the video off (<code>PGIF=</code>): with the render thread running, it can starve the control loop and the duck falls before the swap.</p>
+
+<p class="actions-note">
+        The three plates behind these figures, at full size with the session drawn under each swap:
+        <a href="/writing/same-robot-same-brain/appendix/">Appendix ↗</a>
+      </p>
 
 <h2 id="limits"><span class="n">06</span>What this demo does not show</h2>
 <ul>
@@ -275,7 +281,7 @@ make walk-swap PYTHON=.venv/bin/python PGIF=</code></pre>
 <p>Each run writes its files to <code>state/run/</code> (navigator) or <code>state/run-policy-swap/</code> (brain and walking-brain swaps): <code>trace.csv</code>, the duck's position 50 times a second, and a record of each swap, <code>swaps.json</code> or <code>policy_swap.json</code>. The two charts above were drawn from these files. A new run of the same command deletes the previous run's files, so copy them first if you want to keep them.</p>
 
 <h3>Why <code>GIF=</code>?</h3>
-<p>It turns off the animated video. On our 2-vCPU machine, recording it slowed the navigator run to about a third of real time and broke all 4 brain-swap runs. On a faster computer, try without <code>GIF=</code> and <code>PGIF=</code> to get an animation in <code>state/media/</code>. If the brain swap then fails, put them back.</p>
+<p>It turns off the animated video. On our 2-vCPU machine, recording it slowed the navigator run to about a third of real time and dropped the duck in all 4 brain-swap runs. On a faster computer, try without <code>GIF=</code> and <code>PGIF=</code> to get an animation in <code>state/media/</code>. If the brain swap then fails, put them back.</p>
 
 <h2 id="troubleshooting"><span class="n">08</span>If something goes wrong</h2>
 <div class="table-wrap"><table class="data">

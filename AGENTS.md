@@ -47,6 +47,7 @@ post converter in more depth than this file.
 index.html                                  landing page (hero, #stack, #compare, #evidence, #writing)
 writing/index.html                          post index; entries between posts:start / posts:end
 writing/<slug>/index.html                   one directory per post
+writing/<slug>/<page>/index.html            a sub-page of a post (the Microduck appendix plates)
 about/index.html                            About page
 404.html                                    not-found page
 assets/css/site.css                         all styling (design tokens at the top)

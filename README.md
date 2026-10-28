@@ -13,11 +13,12 @@ from `main` (`/` root), which is why `.nojekyll` is present.
 index.html                              home
 writing/index.html                      post index
 writing/same-robot-same-brain/index.html  the post
+writing/same-robot-same-brain/appendix/index.html  the post's appendix plates
 404.html                                not-found page
 assets/
   css/site.css                          all styling
   js/site.js                            copy buttons, video toggle, TOC highlight
-  fonts/*.woff2                         Inter, Space Grotesk, JetBrains Mono (latin)
+  fonts/*.woff2                         Geist, Geist Mono (latin)
   img/                                  figures, poster, demo video
 robots.txt, sitemap.xml
 tools/
