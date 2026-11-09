@@ -59,7 +59,9 @@ feed.xml                                    RSS 2.0 — maintained BY HAND
 sitemap.xml                                 one <url> per page — hand-maintained
 robots.txt, .nojekyll
 tools/new-post.py                           .odt/.docx draft -> writing/<slug>/
+tools/pages.py                              chrome + sitemap + feed + link checks; syncs chrome
 tools/templates/post.html                   page skeleton used by the converter
+tools/templates/chrome/*.frag               the ONE copy of header, footer, closing tags
 tools/tells.py                              AI-writing tell scanner (WP:AISIGNS)
 ```
 
@@ -114,8 +116,38 @@ Keep the page skeleton the converter emits:
 - `.post-layout` → `nav.toc` (`<ol>` of anchors) beside `article.prose`.
 - Every `<h2>` needs an `id`; add the matching `<li>` to the TOC and number the
   sections consistently with the rest of the site.
-- Site footer verbatim from `tools/templates/post.html`, then
-  `<script src="/assets/js/site.js" defer></script>`.
+- The site footer, site header and closing tags are **not** hand-maintained:
+  they come from `tools/templates/chrome/`. See below.
+
+## Shared chrome — do not hand-edit a marked region
+
+The site header, the site footer and the closing tags exist **once** each, in
+`tools/templates/chrome/<region>.frag`. Every page carries them between marker
+comments:
+
+```html
+<!-- chrome:footer:start -->
+<footer class="site-footer"> … </footer>
+<!-- chrome:footer:end -->
+```
+
+`tools/pages.py` compares each page against the fragment and writes it back:
+
+```sh
+git push origin main             # the deploy is still just this — no build step
+python3 tools/pages.py check     # chrome, sitemap, feed and internal links
+python3 tools/pages.py sync      # rewrite the marked regions in place
+```
+
+Edit the fragment, run `sync`, and every page follows — including the
+`aria-current="page"` marker on the writing and about routes, which `sync`
+applies per page from its path. `adopt` is a one-off for a page that has chrome
+but no markers yet. `new-post.py` renders through the same module, so a
+generated post inherits the current chrome.
+
+The fragments are committed, not published as pages: Pages serves `main`
+verbatim, so they are fetchable under `/tools/`, which `robots.txt` keeps out
+of search results. They are not a route, not in `sitemap.xml`, and not linked.
 
 Prose conventions: figures go under `/assets/img/<slug>/`, ASCII diagrams are
 usually redrawn as inline SVG or CSS, demo GIFs become MP4 + WebP poster.
@@ -132,10 +164,8 @@ python3 tools/tells.py --json writing/<slug>/index.html     # per-finding byte o
 # 2. Serve and click through the pages at desktop + ~360px width
 python3 -m http.server 8099
 
-# 3. Bookkeeping actually matches the pages
-grep -c '<url>' sitemap.xml            # one per route incl. posts and /about/
-grep -o 'writing/[a-z0-9-]*/' feed.xml | sort -u
-ls writing/*/index.html
+# 3. Bookkeeping actually matches the pages (chrome, sitemap, feed, links)
+python3 tools/pages.py check
 ```
 
 `tells.py` flags, it never rewrites — fix the underlying sentence. NOTE-level
@@ -159,15 +189,12 @@ welcome but not a repo requirement.
 
 ## Known drift / gotchas
 
-- `README.md`'s layout block still names *Inter, Space Grotesk, JetBrains Mono*;
-  the site actually ships **Geist / Geist Mono**. The `## Type` section is
-  correct. Fix the drift if you touch that file.
 - `feed.xml` and `sitemap.xml` are hand-maintained except for the sitemap entry
-  the converter appends — check both when adding or renaming a page.
-- `writing/same-robot-same-brain/index.html` references figures under
-  `assets/img/same-robot-same-brain/`, but that directory has been **untracked**
-  in git (13 files, ~5 MB). Before debugging a "missing figure", run
-  `git status` — it may simply not be committed.
+  the converter appends; `python3 tools/pages.py check` catches a route that is
+  in one and not the other.
+- `assets/img/same-robot-same-brain/` is referenced by the Microduck note but has
+  been **untracked** in git (13 files, ~5 MB). Before debugging a "missing
+  figure", run `git status` — it may simply not be committed.
 - `soffice` (LibreOffice) is required only for `.docx` drafts and for GIF
   transcoding checks; `.odt` is parsed directly with `zipfile` + `ElementTree`.
 - Repo lives at `/mnt/E/github-projects/shinro-dev.github.io`; remote is

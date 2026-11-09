@@ -707,7 +707,12 @@ def main():
         with zipfile.ZipFile(odt) as package:
             content_root = ET.fromstring(package.read("content.xml"))
             styles_root = ET.fromstring(package.read("styles.xml"))
-            body = content_root.find(q("office", "body")).find(q("office", "text"))
+            body_el = content_root.find(q("office", "body"))
+            if body_el is None:
+                sys.exit("error: content.xml has no office:body")
+            body = body_el.find(q("office", "text"))
+            if body is None:
+                sys.exit("error: content.xml has no office:text")
             styles = Styles((content_root, styles_root))
 
             converter = Converter(args, styles, package, report, content_root)
@@ -797,6 +802,15 @@ def main():
             page = TEMPLATE.read_text(encoding="utf-8")
             for key, value in values.items():
                 page = page.replace("{{%s}}" % key, value)
+
+            # The page inherits its header, footer and closing tags from
+            # tools/templates/chrome/, with the current-page link marked.
+            try:
+                from pages import render as render_chrome
+
+                page = render_chrome(page, f"/writing/{args.slug}/")
+            except ImportError:  # pragma: no cover - pages.py always ships
+                report.warn("tools/pages.py missing: chrome left unchecked")
 
             target.mkdir(parents=True, exist_ok=True)
             (target / "index.html").write_text(page, encoding="utf-8")

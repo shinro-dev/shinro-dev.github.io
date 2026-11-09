@@ -5,7 +5,9 @@ The Shinro organization site: a landing page, a writing index, and the
 
 Static HTML and one stylesheet. No build step, no framework, no analytics, no
 third-party requests at runtime. GitHub Pages serves this directory directly
-from `main` (`/` root), which is why `.nojekyll` is present.
+from `main` (`/` root), which is why `.nojekyll` is present. The header, footer
+and closing tags are kept in one copy under `tools/templates/chrome/` and
+checked into the pages by `tools/pages.py` — a dev-time tool, not a build.
 
 ## Layout
 
@@ -20,10 +22,12 @@ assets/
   js/site.js                            copy buttons, video toggle, TOC highlight
   fonts/*.woff2                         Geist, Geist Mono (latin)
   img/                                  figures, poster, demo video
-robots.txt, sitemap.xml
+robots.txt, sitemap.xml, feed.xml
 tools/
   new-post.py                           .odt/.docx draft -> post
+  pages.py                              chrome, sitemap, feed and link checks
   templates/post.html                   page skeleton for the converter
+  templates/chrome/*.frag               the one copy of header, footer, closing tags
 ```
 
 ## Preview locally
@@ -76,6 +80,33 @@ By hand: keep the header, footer, `.post-layout`, `.toc` and `.prose`
 structure; give every `<h2>` an `id`, add it to the `.toc` and number the
 sections; update the index and sitemap. Keep figures on the site's own
 assets — the site must not call out to third-party hosts.
+
+## The shared header and footer
+
+The header, the footer and the closing tags exist once, in
+`tools/templates/chrome/{header,footer,tail}.frag`. Every page carries them
+between marker comments, so the page itself stays the readable artifact:
+
+```html
+<!-- chrome:footer:start -->
+<footer class="site-footer"> … </footer>
+<!-- chrome:footer:end -->
+```
+
+```sh
+python3 tools/pages.py check   # chrome, sitemap, feed and internal links
+python3 tools/pages.py sync    # rewrite every marked region from the fragments
+```
+
+`sync` also sets `aria-current="page"` on the Writing or About nav link, worked
+out from the page's own path. `adopt` (one-off) wraps a page that has chrome but
+no markers yet. This is not a build step: nothing runs on push, and the pages
+GitHub Pages serves are the files in the repository.
+
+The fragments are committed rather than hidden; `/tools/` is served with the
+rest of the tree, so `robots.txt` disallows it to keep the fragments out of
+search results. They are not routes: not in `sitemap.xml`, not linked, no page
+metadata.
 
 ## Provenance of the first post
 
