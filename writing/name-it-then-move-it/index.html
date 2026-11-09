@@ -94,6 +94,20 @@
 </figure>
 </div>
 
+<div class="wrap">
+<aside class="try" aria-label="Try the lifecycle demo without a robot">
+<div class="try-text">
+<p class="try-k">Try it without a robot</p>
+<p class="try-title">A Raspberry Pi 5, a stub that prints lines, and four failures you cause on purpose.</p>
+<p class="try-body">No motors, no cameras, no LeRobot install. Change one byte of the stored capsule and admission refuses it; kill the child and it restarts under the policy you named.</p>
+</div>
+<p class="try-actions">
+<a class="btn btn-primary" href="#reproduce-it-or-read-what-it-rests-on">How to run it</a>
+<a class="btn btn-ghost" href="https://github.com/shinro-dev/kiwi-cake-demo">Repo ↗</a>
+</p>
+</aside>
+</div>
+
   <div class="wrap post-layout">
     <nav class="toc" aria-label="Contents">
       <h2>Contents</h2>
@@ -107,7 +121,7 @@
         <li><a href="#who-owns-what">Who owns what</a></li>
         <li><a href="#the-panel-that-shows-its-sources">The panel that shows its sources</a></li>
         <li><a href="#what-this-demo-does-not-claim">What this demo does not claim</a></li>
-        <li><a href="#reproduce-it-or-read-what-it-rests-on">Reproduce it, or read it</a></li>
+        <li><a href="#reproduce-it-or-read-what-it-rests-on">Try it, or read what it rests on</a></li>
         <li><a href="#the-takeaway">The takeaway</a></li>      </ol>
     </nav>
 
@@ -199,18 +213,36 @@
 <li>This recording shows no Cake activation and no Cake module replacement: the capability was already active before the first Start. The lifecycle beats are in the other demo in the same repository.</li>
 <li>Actuator-safe recovery is not demonstrated: the host re-enables torque on every connect, and Cake has no torque concept. The policy also runs at about 12 seconds per chunk on the Pi’s CPU.</li>
 </ul>
-<h2 id="reproduce-it-or-read-what-it-rests-on"><span class="n">10</span>Reproduce it, or read what it rests on</h2>
+<h2 id="reproduce-it-or-read-what-it-rests-on"><span class="n">10</span>Try it, or read what it rests on</h2>
 <p>The demo, the runner and the record are in the <a href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">kiwi-cake-demo repository</a>, on the branch <code>publish/vla-four-click-demo-20261013</code> (revision <code>8e521cf</code>). The recording is embedded in its README; the run-by-run record is <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/publish/vla-four-click-demo-20261013/docs/autonomous-demo/four-click-demo-2026-10-12.md">four-click-demo-2026-10-12.md</a>; the runner is <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/publish/vla-four-click-demo-20261013/vla/README.md">vla/README.md</a>; and the capability assessment is <a href="https://github.com/shinro-dev/kiwi-cake-demo/blob/publish/vla-four-click-demo-20261013/docs/autonomous-demo/cake-capability-assessment.md">cake-capability-assessment.md</a>.</p>
-<p>If you want the lifecycle demo without a robot, the same repository’s <a href="https://github.com/shinro-dev/kiwi-cake-demo">main branch</a> runs a harmless stub on a Pi 5 and lets you break it on purpose: change one byte of the stored capsule and it refuses to start, kill the child and it restarts, kill the resident and it comes back with a fresh session and byte-identical declared identities. That is the older, less photogenic half of the same story.</p>
+<h3>Without a robot, on a Pi 5</h3>
+<p>The same repository's <a href="https://github.com/shinro-dev/kiwi-cake-demo">main branch</a> runs the older, less photogenic half of this story: Cake supervising a stub that prints lines, with no motors, cameras or LeRobot install. The release contains AArch64 binaries only. On a Pi 5 with 64-bit Raspberry Pi OS trixie and the default 16&nbsp;KiB page kernel, with <code>git</code>, <code>openssl</code>, <code>gpg</code>, <code>tar</code>, <code>curl</code> and GNU coreutils installed:</p>
+<div class="code-block">
+<p class="pre-head"><span>shell</span><button class="copy" type="button">Copy</button></p>
+<pre><code>git clone https://github.com/shinro-dev/kiwi-cake-demo.git
+cd kiwi-cake-demo
+bin/fetch-release.sh
+bin/doctor.sh
+tests/smoke-segment1.sh</code></pre>
+</div>
+<p>The fetcher verifies the release checksum and signatures, the doctor checks the board and the binaries, and the smoke test runs four failures on purpose, ending with <code>KIWI-CAKE SEGMENT 1: PASS</code>:</p>
+<ul>
+<li><strong>Change one byte of the stored capsule.</strong> Admission refuses it and names the content identity it expected.</li>
+<li><strong>Kill the child.</strong> Child-exit and child-start events, with a new restart ordinal.</li>
+<li><strong>Kill the resident.</strong> A new session, with byte-identical declared identities: Plan, configuration, build and target profile.</li>
+<li><strong>Ask for a clean stop.</strong> Shutdown output, and the child and socket are gone.</li>
+</ul>
+<p>The transcript and the before-and-after polls sit in <code>state/runs/&lt;id&gt;/</code>; <code>bin/demo-segment1.sh --pause</code> steps through the same sequence by hand. Matching declared identities does not prove the Python environment beside Cake is unchanged, and no application state is restored.</p>
 <p>Cake’s live policy replacement is exercised in the <a href="/writing/same-robot-same-brain/">Microduck note</a>; this demo is about the authority around a policy that runs beside it.</p>
 <h2 id="the-takeaway"><span class="n">11</span>The takeaway</h2>
 <p>A demo like this is easy to make impressive and hard to make trustworthy. The impressive part is a policy that picks up a block. The trustworthy part is everything that can say no: no motion until the robot, the session and the host are named; no base move without the capability; no carry without a pad frame; no action outside the gate; no claim about a slot that this session cannot source.</p>
 <p>That is what we wanted to show. Not that a small VLA can pick up a block (it can, slowly, on a Pi), but that the deployment can say exactly what happened, exactly what did not, and exactly what it does not know.</p>
 <blockquote class="pull"><p>The robot did not restart to gain a capability. It did not pretend the policy was one.</p></blockquote>
       <div class="post-end">
-        <p>Watch the recording, or read what it rests on:</p>
+        <p>Watch the recording, try the lifecycle half on a Pi 5, or read what it rests on:</p>
         <div class="links">
           <a class="btn btn-primary" href="https://github.com/shinro-dev/kiwi-cake-demo/tree/publish/vla-four-click-demo-20261013">Four-click demo ↗</a>
+          <a class="btn btn-ghost" href="https://github.com/shinro-dev/kiwi-cake-demo">Try it on a Pi 5 ↗</a>
           <a class="btn btn-ghost" href="/writing/same-robot-same-brain/">The Microduck note ↗</a>
         </div>
         <p class="actions-note">
